@@ -8,7 +8,7 @@ sharedlib:
 	sudo ldconfig
 
 bindings:
-	ocamlfind ocamlc -linkpkg -custom -package ctypes,ctypes.foreign cv.ml -cclib -lcv -o cv
+	ocamlfind ocamlopt -linkpkg -package ctypes,ctypes.foreign cv.ml -cclib -lcv -o cv
 
 clean:
-	rm -f cv.cmo cv.cmi cv.cmx libcv.so cv
+	rm -f cv.cmo cv.cmi cv.cmx libcv.so cv.o cv
