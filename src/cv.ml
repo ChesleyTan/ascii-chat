@@ -366,11 +366,15 @@ let get_256 c =
         | Not_found -> failwith ("Could not find color: " ^ c)
 
 (* ANSI escape sequence for 256-color *)
-let get_ansi c = "\x1B[38;5;" ^ c ^ "m"
+let get_ansi c colors_only =
+    if colors_only then
+        "\x1B[48;5;" ^ c ^ "m"
+    else
+        "\x1B[38;5;" ^ c ^ "m"
 
 (* Colorizes pixels using the given array of colors for each pixel. The length
  * of pixels and colors are given by [size] *)
-let colorize size pixels colors =
+let colorize size pixels colors colors_only =
     (* Make enough room for ANSI color sequences for each character. A
      * multiplier of 15 should be plenty. *)
     let buf = FastString.create (size * 15) in
@@ -385,14 +389,14 @@ let colorize size pixels colors =
             begin
                 last_color := color;
                 FastString.append buf @@
-                    (get_ansi color) ^ (string_of_char pixel)
+                    (get_ansi color colors_only) ^ (string_of_char pixel)
             end
     done;
     FastString.append buf ansi_reset;
     FastString.to_string buf
 
-let get_frame () =
-    let frame_ptr = frame 72 36 in
+let get_frame colors_only =
+    let frame_ptr = frame 200 80 in
     let width = frame_width () in
     let height = frame_height () in
     let depth = frame_depth () in
@@ -411,7 +415,10 @@ let get_frame () =
             let g = get_int col row 1 in
             let r = get_int col row 2 in
             let avg = (r + g + b) / 3 in
-            FastString.append_char buf (ascii_of_uchar avg);
+            if not colors_only then
+                FastString.append_char buf (ascii_of_uchar avg)
+            else
+                FastString.append_char buf ' ';
             Array.set colors !idx (get_hex r g b |> get_256);
             incr idx
         done;
@@ -419,13 +426,13 @@ let get_frame () =
         Array.set colors !idx "";
         incr idx
     done;
-    colorize size buf colors
+    colorize size buf colors colors_only
 
 let _ =
     clear_screen ();
     while true; do
         restore_cursor ();
-        get_frame () |> print_unbuf;
+        get_frame false |> print_unbuf;
         Unix.sleepf 0.1;
     done;
     cleanup ()
