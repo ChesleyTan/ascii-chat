@@ -4,6 +4,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 extern "C" {
+    cv::VideoCapture *cap = NULL;
     unsigned char *data = NULL;
     int height = 0;
     int width = 0;
@@ -22,13 +23,15 @@ extern "C" {
     }
 
     unsigned char *read_frame() {
-        cv::VideoCapture cap(0);
-        if (!cap.isOpened()) {
+        if (cap == NULL) {
+            cap = new cv::VideoCapture(0);
+        }
+        if (!cap->isOpened()) {
             fprintf(stderr, "Could not open default capture source!\n");
             return NULL;
         }
         cv::Mat frame;
-        cap >> frame;
+        *cap >> frame;
         if (width != frame.size[0] || height != frame.size[1]) {
             width = frame.size[0];
             height = frame.size[1];
@@ -40,5 +43,16 @@ extern "C" {
         }
         memcpy(data, frame.data, sizeof(*data) * width * height * depth);
         return data;
+    }
+
+    void cleanup() {
+        if (cap) {
+            delete cap;
+            cap = NULL;
+        }
+        if (data) {
+            free(data);
+            data = NULL;
+        }
     }
 }

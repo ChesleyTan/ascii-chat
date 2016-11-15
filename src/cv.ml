@@ -11,11 +11,14 @@ let coordinate_to_index (height, width, depth) (col, row, dep) =
 
 let string_of_uchar = Unsigned.UChar.to_string
 
+(* C++ interface bindings *)
+let frame = foreign "read_frame" (void @-> returning (ptr uchar))
+let frame_width = foreign "frame_width" (void @-> returning int)
+let frame_height = foreign "frame_height" (void @-> returning int)
+let frame_depth = foreign "frame_depth" (void @-> returning int)
+let cleanup = foreign "cleanup" (void @-> returning void)
+
 let _ =
-    let frame = foreign "read_frame" (void @-> returning (ptr uchar)) in
-    let frame_width = foreign "frame_width" (void @-> returning int) in
-    let frame_height = foreign "frame_height" (void @-> returning int) in
-    let frame_depth = foreign "frame_depth" (void @-> returning int) in
     let frame_ptr = frame () in
     let width = frame_width () in
     let height = frame_height () in
@@ -26,9 +29,11 @@ let _ =
                               (string_of_int width);
     for row = 0 to height - 1 do
         for col = 0 to width - 1 do
-            Printf.printf "(%s,%s,%s)\n"
+            Printf.printf "(%s,%s,%s);"
                 (string_of_uchar @@ get frame_array @@ c2i (col, row, 0))
                 (string_of_uchar @@ get frame_array @@ c2i (col, row, 1))
                 (string_of_uchar @@ get frame_array @@ c2i (col, row, 2))
-        done
-    done
+        done;
+        Printf.printf "\n"
+    done;
+    cleanup ()

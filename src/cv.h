@@ -6,6 +6,7 @@ extern "C" {
     int frame_width();
     int frame_depth();
     unsigned char *read_frame();
+    void cleanup();
 }
 
 #endif
