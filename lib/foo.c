@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 extern "C" {
     void foo() {
@@ -10,7 +12,11 @@ extern "C" {
             return;
         }
         cv::Mat frame;
-        cap >> frame;
-        cv::imshow("orig", frame);
+        cv::namedWindow("orig", cv::WINDOW_AUTOSIZE);
+        for (;;) {
+            cap >> frame;
+            cv::imshow("orig", frame);
+            cv::waitKey(1);
+        }
     }
 }
