@@ -9,8 +9,6 @@ extern "C" {
     int height = 0;
     int width = 0;
     int depth = 3; // b, g, r channels (we assume the depth is 3)
-    int MAX_WIDTH = 72;
-    int MAX_HEIGHT = 36;
 
     int frame_height() {
         return height;
@@ -24,7 +22,7 @@ extern "C" {
         return depth;
     }
 
-    unsigned char *read_frame() {
+    unsigned char *read_frame(int desired_width, int desired_height) {
         if (cap == NULL) {
             cap = new cv::VideoCapture(0);
         }
@@ -34,8 +32,8 @@ extern "C" {
         }
         cv::Mat frame;
         *cap >> frame;
-        if (frame.size[0] != MAX_HEIGHT || frame.size[1] != MAX_WIDTH) {
-            cv::resize(frame, frame, cv::Size(MAX_WIDTH, MAX_HEIGHT), 0, 0, CV_INTER_LINEAR);
+        if (frame.size[0] != desired_height || frame.size[1] != desired_width) {
+            cv::resize(frame, frame, cv::Size(desired_width, desired_height), 0, 0, CV_INTER_LINEAR);
         }
         if (height != frame.size[0] || width != frame.size[1]) {
             height = frame.size[0];

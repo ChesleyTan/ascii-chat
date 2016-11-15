@@ -2,7 +2,44 @@ open Ctypes
 open Ctypes.CArray
 open Foreign
 
-module FastString = struct
+module type FastStringSig = sig
+    type t
+    val create: int -> t
+    val make: int -> char -> t
+    val length: t -> int
+    val get: t -> int -> char
+    val set: t -> int -> char -> unit
+    val to_string: t -> string
+    val append: t -> string -> unit
+    val append_char: t -> char -> unit
+end
+module FastString: FastStringSig = struct
+    type t = {data: Bytes.t; length: int ref; size: int ref}
+    let create n =
+        { data = Bytes.create n
+        ; length = ref 0
+        ; size = ref n
+        }
+    let make n c =
+        { data = Bytes.make n c
+        ; length = ref 0
+        ; size = ref n
+        }
+    let length {data; length; size} = !length
+    let get {data; length; size} n = Bytes.get data n
+    let set {data; length; size} n c = Bytes.set data n c
+    let to_string {data; length; size} = Bytes.sub_string data 0 !length
+    let append {data; length; size} x =
+        let x_len = String.length x in
+        let new_len = !length + x_len in
+        if new_len > !size then
+            failwith "FastString index out of bounds!"
+        else
+            Bytes.blit_string x 0 data !length x_len;
+            length := new_len
+    let append_char {data; length; size} x =
+        Bytes.set data !length x;
+        incr length
 end
 
 (* Converts a three-dimensional coordinate to an index in the corresponding
@@ -37,7 +74,7 @@ let restore_cursor () =
 let ansi_reset = "\x1B[0m"
 
 (* C++ interface bindings *)
-let frame = foreign "read_frame" (void @-> returning (ptr uchar))
+let frame = foreign "read_frame" (int @-> int @-> returning (ptr uchar))
 let frame_width = foreign "frame_width" (void @-> returning int)
 let frame_height = foreign "frame_height" (void @-> returning int)
 let frame_depth = foreign "frame_depth" (void @-> returning int)
@@ -305,7 +342,7 @@ let _ =
 
 (* Converts a 0-255 color value to an approximate hex code *)
 let to_color c =
-    if c < 60 then
+    if c < 50 then
         "00"
     else if c < 115 then
         "5F"
@@ -334,27 +371,28 @@ let get_ansi c = "\x1B[38;5;" ^ c ^ "m"
 (* Colorizes pixels using the given array of colors for each pixel. The length
  * of pixels and colors are given by [size] *)
 let colorize size pixels colors =
-    let buf = ref "" in
+    (* Make enough room for ANSI color sequences for each character. A
+     * multiplier of 15 should be plenty. *)
+    let buf = FastString.create (size * 15) in
     (* Avoid duplicate color control sequences *)
     let last_color = ref "" in
     for i = 0 to size - 1 do
         let color = Array.get colors i
-        and pixel = Bytes.get pixels i in
+        and pixel = FastString.get pixels i in
         if color = !last_color then
-            buf := !buf ^ (string_of_char pixel)
+            FastString.append buf (string_of_char pixel)
         else
             begin
                 last_color := color;
-                buf := !buf
-                    ^ (get_ansi color)
-                    ^ (string_of_char pixel)
+                FastString.append buf @@
+                    (get_ansi color) ^ (string_of_char pixel)
             end
     done;
-    buf := !buf ^ ansi_reset;
-    !buf
+    FastString.append buf ansi_reset;
+    FastString.to_string buf
 
 let get_frame () =
-    let frame_ptr = frame () in
+    let frame_ptr = frame 72 36 in
     let width = frame_width () in
     let height = frame_height () in
     let depth = frame_depth () in
@@ -364,7 +402,7 @@ let get_frame () =
         get frame_array (c2i (col, row, dep)) |> Unsigned.UChar.to_int in
     (* Allocate space for each line and newline *)
     let size = height * (width + 1) in
-    let buf = Bytes.create size in
+    let buf = FastString.create size in
     let colors = Array.make size "" in
     let idx = ref 0 in
     for row = 0 to height - 1 do
@@ -373,17 +411,12 @@ let get_frame () =
             let g = get_int col row 1 in
             let r = get_int col row 2 in
             let avg = (r + g + b) / 3 in
-            Bytes.set buf !idx (ascii_of_uchar avg);
+            FastString.append_char buf (ascii_of_uchar avg);
             Array.set colors !idx (get_hex r g b |> get_256);
-            (*
-            Printf.printf "(%s,%s,%s);"
-                (string_of_uchar @@ get frame_array @@ c2i (col, row, 0))
-                (string_of_uchar @@ get frame_array @@ c2i (col, row, 1))
-                (string_of_uchar @@ get frame_array @@ c2i (col, row, 2))
-            *)
             incr idx
         done;
-        Bytes.set buf !idx '\n';
+        FastString.append_char buf '\n';
+        Array.set colors !idx "";
         incr idx
     done;
     colorize size buf colors
