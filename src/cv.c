@@ -9,6 +9,7 @@ extern "C" {
     int height = 0;
     int width = 0;
     int depth = 3; // r, g, b channels (we assume the depth is 3)
+    int MAX_SIZE = 96;
 
     int frame_height() {
         return height;
@@ -32,9 +33,12 @@ extern "C" {
         }
         cv::Mat frame;
         *cap >> frame;
-        if (width != frame.size[0] || height != frame.size[1]) {
-            width = frame.size[0];
-            height = frame.size[1];
+        if (frame.size[0] > MAX_SIZE || frame.size[1] > MAX_SIZE) {
+            cv::resize(frame, frame, cv::Size(MAX_SIZE, MAX_SIZE), 0, 0, CV_INTER_LINEAR);
+        }
+        if (height != frame.size[0] || width != frame.size[1]) {
+            height = frame.size[0];
+            width = frame.size[1];
             //printf("%d x %d\n", height, width);
             if (data) {
                 free(data);

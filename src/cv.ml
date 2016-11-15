@@ -10,6 +10,13 @@ let coordinate_to_index (height, width, depth) (col, row, dep) =
     row_offset + col_offset + dep
 
 let string_of_uchar = Unsigned.UChar.to_string
+let ascii_of_uchar n =
+    if n < 100 then
+        '.'
+    else if n >= 100 && n < 200 then
+        '*'
+    else
+        '#'
 
 (* C++ interface bindings *)
 let frame = foreign "read_frame" (void @-> returning (ptr uchar))
@@ -29,10 +36,17 @@ let _ =
                               (string_of_int width);
     for row = 0 to height - 1 do
         for col = 0 to width - 1 do
+            let avg =
+                ((get frame_array (c2i (col, row, 0)) |> Unsigned.UChar.to_int) +
+                (get frame_array (c2i (col, row, 1)) |> Unsigned.UChar.to_int) +
+                (get frame_array (c2i (col, row, 2)) |> Unsigned.UChar.to_int)) / 3
+            in Printf.printf "%c" (ascii_of_uchar avg)
+            (*
             Printf.printf "(%s,%s,%s);"
                 (string_of_uchar @@ get frame_array @@ c2i (col, row, 0))
                 (string_of_uchar @@ get frame_array @@ c2i (col, row, 1))
                 (string_of_uchar @@ get frame_array @@ c2i (col, row, 2))
+            *)
         done;
         Printf.printf "\n"
     done;
