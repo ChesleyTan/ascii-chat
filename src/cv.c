@@ -8,7 +8,7 @@ extern "C" {
     unsigned char *data = NULL;
     int height = 0;
     int width = 0;
-    int depth = 3; // r, g, b channels (we assume the depth is 3)
+    int depth = 3; // b, g, r channels (we assume the depth is 3)
     int MAX_WIDTH = 72;
     int MAX_HEIGHT = 36;
 
