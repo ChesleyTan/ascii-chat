@@ -428,16 +428,16 @@ let get_256 c =
         | Not_found -> failwith ("Could not find color: " ^ c)
 
 (* ANSI escape sequence for 256-color *)
-let get_ansi c colors_only =
-    if colors_only then
-        "\x1B[48;5;" ^ c ^ "m"
+let get_ansi c text_only =
+    if text_only then
+        "\x1B[38;5;" ^ c ^ "m"
     else
         "\x1B[38;5;" ^ c ^ "m" ^
         "\x1B[48;5;" ^ c ^ "m"
 
 (* Colorizes pixels using the given array of colors for each pixel. The length
  * of pixels and colors are given by [size] *)
-let colorize size pixels colors colors_only =
+let colorize size pixels colors text_only =
     (* Make enough room for ANSI color sequences for each character. A
      * multiplier of 22 should be plenty. *)
     let buf = FastString.create (size * 22) in
@@ -452,7 +452,7 @@ let colorize size pixels colors colors_only =
             begin
                 last_color := color;
                 FastString.append buf @@
-                    (get_ansi color colors_only) ^ (string_of_char pixel)
+                    (get_ansi color text_only) ^ (string_of_char pixel)
             end
     done;
     FastString.append buf ansi_reset;
@@ -465,7 +465,7 @@ let time f =
     print_unbuf @@ Printf.sprintf "Execution time: %fs\n" (stop -. start);
     ret
 
-let get_frame colors_only =
+let get_frame text_only =
     let frame_ptr = frame 200 80 in
     let width = frame_width () in
     let height = frame_height () in
@@ -485,18 +485,17 @@ let get_frame colors_only =
             let g = get_int col row 1 in
             let r = get_int col row 2 in
             let avg = (r + g + b) / 3 in
-            if not colors_only then
-                FastString.append_char buf (ascii_of_uchar avg)
+            FastString.append_char buf (ascii_of_uchar avg);
+            if not text_only then
+                Array.set colors !idx (get_hex r g b |> get_256)
             else
-                FastString.append_char buf ' ';
-            Array.set colors !idx (get_hex r g b |> get_256);
+                ();
             incr idx
         done;
         FastString.append_char buf '\n';
-        Array.set colors !idx "";
         incr idx
     done;
-    colorize size buf colors colors_only
+    colorize size buf colors text_only
 
 let _ =
     clear_screen ();
