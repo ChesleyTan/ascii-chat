@@ -62,8 +62,7 @@ let ascii_of_uchar n =
         '#'
 
 let print_unbuf s =
-    Printf.printf "%s" s;
-    flush stdout
+    Printf.printf "%s%!" s
 
 let clear_screen () =
     print_unbuf "\x1B[2J"
@@ -459,6 +458,13 @@ let colorize size pixels colors colors_only =
     FastString.append buf ansi_reset;
     FastString.to_string buf
 
+let time f =
+    let start = Unix.gettimeofday () in
+    let ret = f () in
+    let stop = Unix.gettimeofday () in
+    print_unbuf @@ Printf.sprintf "Execution time: %fs\n" (stop -. start);
+    ret
+
 let get_frame colors_only =
     let frame_ptr = frame 200 80 in
     let width = frame_width () in
@@ -496,7 +502,7 @@ let _ =
     clear_screen ();
     while true; do
         restore_cursor ();
-        get_frame false |> print_unbuf;
+        time (fun _ -> get_frame false |> print_unbuf);
         Unix.sleepf 0.1;
     done;
     cleanup ()
