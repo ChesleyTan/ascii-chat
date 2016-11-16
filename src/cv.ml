@@ -342,7 +342,7 @@ let _ =
 
 (* Converts a 0-255 color value to an approximate hex code *)
 let to_color c =
-    if c < 50 then
+    if c < 60 then
         "00"
     else if c < 115 then
         "5F"
@@ -355,8 +355,71 @@ let to_color c =
     else
         "FF"
 
+(* Converts a 0-255 grayscale value to an approximate hex code *)
+let to_grayscale c =
+    if c < 8 then
+        "08"
+    else if c < 18 then
+        "12"
+    else if c < 28 then
+        "1C"
+    else if c < 38 then
+        "26"
+    else if c < 48 then
+        "30"
+    else if c < 58 then
+        "3A"
+    else if c < 68 then
+        "44"
+    else if c < 78 then
+        "4E"
+    else if c < 88 then
+        "58"
+    else if c < 98 then
+        "62"
+    else if c < 108 then
+        "6C"
+    else if c < 118 then
+        "76"
+    else if c < 128 then
+        "80"
+    else if c < 138 then
+        "8A"
+    else if c < 148 then
+        "94"
+    else if c < 158 then
+        "9E"
+    else if c < 168 then
+        "A8"
+    else if c < 178 then
+        "B2"
+    else if c < 188 then
+        "BC"
+    else if c < 198 then
+        "C6"
+    else if c < 208 then
+        "D0"
+    else if c < 218 then
+        "DA"
+    else if c < 228 then
+        "E4"
+    else if c < 238 then
+        "EE"
+    else
+        "FF"
+
+let is_grayscale r g b =
+    let avg = (r + g + b) / 3 in
+    abs (r - avg) < 20 && abs (g - avg) < 20 && abs (b - avg) < 20
+
 (* Gets an approximated hex value for an (r,g,b) color *)
-let get_hex r g b = (to_color r) ^ (to_color g) ^ (to_color b)
+let get_hex r g b =
+    if is_grayscale r g b then
+        let avg = (r + g + b) / 3 in
+        let hexcode = (to_grayscale avg) in
+        hexcode ^ hexcode ^ hexcode
+    else
+        (to_color r) ^ (to_color g) ^ (to_color b)
 
 (* Converts a hex code to its xterm-256 representation *)
 let get_256 c =
@@ -370,14 +433,15 @@ let get_ansi c colors_only =
     if colors_only then
         "\x1B[48;5;" ^ c ^ "m"
     else
-        "\x1B[38;5;" ^ c ^ "m"
+        "\x1B[38;5;" ^ c ^ "m" ^
+        "\x1B[48;5;" ^ c ^ "m"
 
 (* Colorizes pixels using the given array of colors for each pixel. The length
  * of pixels and colors are given by [size] *)
 let colorize size pixels colors colors_only =
     (* Make enough room for ANSI color sequences for each character. A
-     * multiplier of 15 should be plenty. *)
-    let buf = FastString.create (size * 15) in
+     * multiplier of 22 should be plenty. *)
+    let buf = FastString.create (size * 22) in
     (* Avoid duplicate color control sequences *)
     let last_color = ref "" in
     for i = 0 to size - 1 do
