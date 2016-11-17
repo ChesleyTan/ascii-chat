@@ -1,5 +1,4 @@
 *.sw*
-.merlin
 *.annot
 *.cmo
 *.cma
