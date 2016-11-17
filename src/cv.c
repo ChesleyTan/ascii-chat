@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/videoio.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 #include <thread>
 #include <atomic>
 
@@ -56,7 +58,7 @@ extern "C" {
             *cap >> frame;
         }
         if (frame.size[0] != desired_height || frame.size[1] != desired_width) {
-            cv::resize(frame, frame, cv::Size(desired_width, desired_height), 0, 0, CV_INTER_LINEAR);
+            cv::resize(frame, frame, cv::Size(desired_width, desired_height), 0, 0, cv::INTER_LINEAR);
         }
         if (height != frame.size[0] || width != frame.size[1]) {
             height = frame.size[0];

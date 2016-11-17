@@ -1,7 +1,7 @@
 all: sharedlib bindings
 
 sharedlib:
-	g++ -shared -fPIC -std=c++11 -pedantic -Wall cv.c cv.h -lopencv_core -lopencv_highgui -o libcv.so
+	g++ -shared -fPIC -std=c++11 -pedantic -Wall cv.c cv.h -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -o libcv.so
 	chmod 755 libcv.so
 	sudo rm -f /usr/lib/libcv.so
 	sudo cp libcv.so /usr/lib

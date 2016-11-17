@@ -1,5 +1,5 @@
 all:
-	g++ -shared -fPIC -ansi -pedantic -Wall foo.c foo.h -lopencv_core -lopencv_highgui -o libfoo.so
+	g++ -shared -fPIC -ansi -pedantic -Wall foo.c foo.h -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -o libfoo.so
 	chmod 755 libfoo.so
 	sudo rm -f /usr/lib/libfoo.so
 	sudo cp libfoo.so /usr/lib
