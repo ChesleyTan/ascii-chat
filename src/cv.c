@@ -74,6 +74,8 @@ extern "C" {
     }
 
     void cleanup() {
+        // Note: Race condition with grabber thread when calling cleanup could
+        // result in segfault
         grabber_thread_running.store(false);
         if (cap) {
             delete cap;
