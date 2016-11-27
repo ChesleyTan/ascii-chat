@@ -1,4 +1,4 @@
-TARGET=main
+TARGET=main package
 OCAMLPKGS=ctypes,ctypes.foreign,unix
 
 all: sharedlib bindings $(TARGET)
@@ -20,6 +20,8 @@ bindings: sharedlib cv.cmi cv.cmx
 
 main: bindings main.ml
 	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) cv.cmx main.ml -cclib -lcv -o main
+
+package: package.cmi package.cmx
 
 clean:
 	rm -f *.cmi *.cmx *.o libcv.so main a.out
