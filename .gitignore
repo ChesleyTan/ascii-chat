@@ -19,3 +19,19 @@ _build/
 # oasis generated files
 setup.data
 setup.log
+
+# Text Backup Files #
+*.sw[a-z]
+*~
+\#*\#
+.\#*
+
+# OS X Files #
+.DS_Store
+._*
+.Spotlight*
+.Trashes
+
+# Windows Files #
+Thumbs.db
+ehthumbs.db
