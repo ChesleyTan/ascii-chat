@@ -42,6 +42,12 @@ module FastString: FastStringSig = struct
         incr length
 end
 
+type image = { data: FastString.t
+             ; colors: string array
+             ; width: int
+             ; height: int
+             ; text_only: bool}
+
 (* Converts a three-dimensional coordinate to an index in the corresponding
  * representative one-dimensional array *)
 let coordinate_to_index (height, width, depth) (col, row, dep) =
@@ -435,29 +441,6 @@ let get_ansi c text_only =
         "\x1B[38;5;" ^ c ^ "m" ^
         "\x1B[48;5;" ^ c ^ "m"
 
-(* Colorizes pixels using the given array of colors for each pixel. The length
- * of pixels and colors are given by [size] *)
-let colorize size pixels colors text_only =
-    (* Make enough room for ANSI color sequences for each character. A
-     * multiplier of 22 should be plenty. *)
-    let buf = FastString.create (size * 22) in
-    (* Avoid duplicate color control sequences *)
-    let last_color = ref "" in
-    for i = 0 to size - 1 do
-        let color = Array.get colors i
-        and pixel = FastString.get pixels i in
-        if color = !last_color then
-            FastString.append buf (string_of_char pixel)
-        else
-            begin
-                last_color := color;
-                FastString.append buf @@
-                    (get_ansi color text_only) ^ (string_of_char pixel)
-            end
-    done;
-    FastString.append buf ansi_reset;
-    FastString.to_string buf
-
 let time f =
     let start = Unix.gettimeofday () in
     let ret = f () in
@@ -466,7 +449,7 @@ let time f =
     ret
 
 let get_frame text_only =
-    let frame_ptr = frame 200 80 in
+    let frame_ptr = frame 100 40 in
     let width = frame_width () in
     let height = frame_height () in
     let depth = frame_depth () in
@@ -495,13 +478,41 @@ let get_frame text_only =
         FastString.append_char buf '\n';
         incr idx
     done;
-    colorize size buf colors text_only
+    { data = buf
+    ; colors = colors
+    ; width = width
+    ; height = height
+    ; text_only = text_only}
+
+(* Colorizes pixels using the given array of colors for each pixel. The length
+ * of pixels and colors are given by [size] *)
+let colorize {data; colors; width; height; text_only} =
+    (* Make enough room for ANSI color sequences for each character. A
+     * multiplier of 22 should be plenty. *)
+    let size = FastString.length data in
+    let buf = FastString.create (size * 22) in
+    (* Avoid duplicate color control sequences *)
+    let last_color = ref "" in
+    for i = 0 to size - 1 do
+        let color = Array.get colors i
+        and pixel = FastString.get data i in
+        if color = !last_color then
+            FastString.append buf (string_of_char pixel)
+        else
+            begin
+                last_color := color;
+                FastString.append buf @@
+                    (get_ansi color text_only) ^ (string_of_char pixel)
+            end
+    done;
+    FastString.append buf ansi_reset;
+    FastString.to_string buf
 
 let _ =
     clear_screen ();
     while true; do
         restore_cursor ();
-        time (fun _ -> get_frame false |> print_unbuf);
+        time (fun _ -> get_frame false |> colorize |> print_unbuf);
         Unix.sleepf 0.1;
     done;
     cleanup ()
