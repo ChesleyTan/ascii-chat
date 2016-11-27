@@ -13,6 +13,7 @@ module type FastStringSig = sig
     val append: t -> string -> unit
     val append_char: t -> char -> unit
 end
+
 module FastString: FastStringSig = struct
     type t = {data: Bytes.t; length: int ref; size: int ref}
     let create n =
