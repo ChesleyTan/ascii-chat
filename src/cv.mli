@@ -17,3 +17,12 @@ type image = { data: FastString.t
              ; width: int
              ; height: int
              ; text_only: bool}
+
+module type CvSig = sig
+    val coordinate_to_index: (int * int * int) -> (int * int * int) -> int
+    val cleanup: unit -> unit
+    val colorize: image -> string
+    val get_frame: bool -> image
+end
+
+module Cv: CvSig
