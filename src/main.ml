@@ -23,8 +23,8 @@ let _ =
         restore_cursor ();
         time (fun _ -> get_frame false |> colorize |> print_unbuf);
         (*
-        time (fun _ -> get_frame false |> pack |> serialize |> compress |>
-        decompress |> deserialize |> unpack |> colorize |> print_unbuf);
+        time (fun _ -> get_frame false |> (fun x -> pack x "text") |> serialize |> compress |>
+        decompress |> deserialize |> unpack |> fst |> colorize |> print_unbuf);
         *)
         Unix.sleepf 0.1;
     done;

@@ -1,9 +1,9 @@
 open Cv
 type package
 
-val pack: image -> package
+val pack: image -> string -> package
 
-val unpack: package -> image
+val unpack: package -> (image * string)
 
 val serialize: package -> string
 
