@@ -1,6 +1,8 @@
 open Cv.Cv
 open Package
 
+let text_only = true
+
 let print_unbuf s =
     Printf.printf "%s%!" s
 
@@ -21,7 +23,7 @@ let _ =
     clear_screen ();
     while true; do
         restore_cursor ();
-        time (fun _ -> get_frame false |> colorize |> print_unbuf);
+        time (fun _ -> get_frame text_only |> colorize |> print_unbuf);
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
         ())) |> serialize |> compress |>
