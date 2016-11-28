@@ -4,12 +4,12 @@ OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4
 
 all: sharedlib bindings $(TARGET)
 
-sharedlib: cv.c cv.h
-	g++ -shared -fPIC -std=c++11 -pedantic -Wall cv.c cv.h -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -o libcv.so
+sharedlib: cv.cpp cv.h
+	g++ -shared -fPIC -std=c++11 -pedantic -Wall cv.cpp -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -o libcv.so
 	chmod 755 libcv.so
-	sudo rm -f /usr/lib/libcv.so
-	sudo cp libcv.so /usr/lib
-	sudo ldconfig
+	sudo rm -f /usr/local/lib/libcv.so
+	sudo cp libcv.so /usr/local/lib
+	sudo ldconfig || echo "Warning: ldconfig not found"
 
 %.cmi: %.mli
 	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) $< -c

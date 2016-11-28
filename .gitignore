@@ -20,6 +20,11 @@ _build/
 setup.data
 setup.log
 
+# Compiled Files #
+a.out
+*.gch
+*.so
+
 # Text Backup Files #
 *.sw[a-z]
 *~
