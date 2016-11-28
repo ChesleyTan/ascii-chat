@@ -9,7 +9,7 @@ sharedlib: cv.cpp cv.h
 	chmod 755 libcv.so
 	sudo rm -f /usr/local/lib/libcv.so
 	sudo cp libcv.so /usr/local/lib
-	@(which ldconfig && sudo ldconfig) || true
+	@(which ldconfig > /dev/null && sudo ldconfig) || true
 
 %.cmi: %.mli
 	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) $< -c
@@ -25,3 +25,5 @@ main: bindings $(OBJ)
 
 clean:
 	rm -f *.cmi *.cmx *.o libcv.so
+
+.PHONY: default all clean sharedlib bindings main
