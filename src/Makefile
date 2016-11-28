@@ -1,9 +1,10 @@
-TARGET=main package
-OCAMLPKGS=ctypes,ctypes.foreign,unix
+TARGET=main
+OBJ=package.cmx main.cmx
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson
 
 all: sharedlib bindings $(TARGET)
 
-sharedlib:
+sharedlib: cv.c cv.h
 	g++ -shared -fPIC -std=c++11 -pedantic -Wall cv.c cv.h -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -o libcv.so
 	chmod 755 libcv.so
 	sudo rm -f /usr/lib/libcv.so
@@ -17,11 +18,10 @@ sharedlib:
 	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) $< -c
 
 bindings: sharedlib cv.cmi cv.cmx
+	@echo Building CV bindings
 
-main: bindings main.ml
-	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) cv.cmx main.ml -cclib -lcv -o main
-
-package: package.cmi package.cmx
+main: bindings $(OBJ)
+	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) cv.cmx $(OBJ) -cclib -lcv -o ascii-chat
 
 clean:
-	rm -f *.cmi *.cmx *.o libcv.so main a.out
+	rm -f *.cmi *.cmx *.o libcv.so ascii-chat a.out

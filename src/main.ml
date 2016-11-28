@@ -1,4 +1,5 @@
 open Cv.Cv
+open Package
 
 let print_unbuf s =
     Printf.printf "%s%!" s
@@ -21,6 +22,7 @@ let _ =
     while true; do
         restore_cursor ();
         time (fun _ -> get_frame false |> colorize |> print_unbuf);
-        Unix.sleepf 0.1;
+        (*time (fun _ -> get_frame false |> pack |> serialize |> print_unbuf);*)
+        Unix.sleepf 2.1;
     done;
     cleanup ()

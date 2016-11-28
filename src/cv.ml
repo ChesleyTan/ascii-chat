@@ -9,6 +9,7 @@ module type FastStringSig = sig
     val length: t -> int
     val get: t -> int -> char
     val set: t -> int -> char -> unit
+    val of_string: string -> t
     val to_string: t -> string
     val append: t -> string -> unit
     val append_char: t -> char -> unit
@@ -30,6 +31,13 @@ module FastString: FastStringSig = struct
     let get {data; length; size} n = Bytes.get data n
     let set {data; length; size} n c = Bytes.set data n c
     let to_string {data; length; size} = Bytes.sub_string data 0 !length
+    let of_string s =
+        let bytes_string = Bytes.of_string s in
+        let strlen = Bytes.length bytes_string in
+        { data = bytes_string
+        ; length = ref strlen
+        ; size = ref strlen
+        }
     let append {data; length; size} x =
         let x_len = String.length x in
         let new_len = !length + x_len in

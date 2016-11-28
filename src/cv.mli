@@ -5,6 +5,7 @@ module type FastStringSig = sig
     val length: t -> int
     val get: t -> int -> char
     val set: t -> int -> char -> unit
+    val of_string: string -> t
     val to_string: t -> string
     val append: t -> string -> unit
     val append_char: t -> char -> unit

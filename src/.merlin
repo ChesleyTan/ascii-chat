@@ -2,3 +2,4 @@ B .
 S .
 PKG ctypes
 PKG ctypes.foreign
+PKG yojson
