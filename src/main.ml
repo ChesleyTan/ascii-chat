@@ -1,7 +1,6 @@
 open Cv.Cv
 open Package
-
-let text_only = true
+open Arg
 
 let print_unbuf s =
     Printf.printf "%s%!" s
@@ -19,11 +18,20 @@ let time f =
     print_unbuf @@ Printf.sprintf "Execution time: %fs\n" (stop -. start);
     ret
 
+let text_only = ref false
+
+let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
+            ; ("-t", Arg.Set text_only, "Enable text-only mode")
+            ]
+
+let help_header = "Available options: "
+
 let _ =
+    Arg.parse specs ignore help_header;
     clear_screen ();
     while true; do
         restore_cursor ();
-        time (fun _ -> get_frame text_only |> colorize |> print_unbuf);
+        time (fun _ -> get_frame !text_only |> colorize |> print_unbuf);
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
         ())) |> serialize |> compress |>
