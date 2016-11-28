@@ -23,7 +23,7 @@ module type CvSig = sig
     val coordinate_to_index: (int * int * int) -> (int * int * int) -> int
     val cleanup: unit -> unit
     val colorize: image -> string
-    val get_frame: bool -> image
+    val get_frame: bool -> int -> int -> image
 end
 
 module Cv: CvSig

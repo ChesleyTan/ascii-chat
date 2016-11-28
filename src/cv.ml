@@ -61,7 +61,7 @@ module type CvSig = sig
     val coordinate_to_index: (int * int * int) -> (int * int * int) -> int
     val cleanup: unit -> unit
     val colorize: image -> string
-    val get_frame: bool -> image
+    val get_frame: bool -> int -> int -> image
 end
 
 module Cv: CvSig = struct
@@ -449,8 +449,8 @@ module Cv: CvSig = struct
             "\x1B[38;5;" ^ c ^ "m" ^
             "\x1B[48;5;" ^ c ^ "m"
 
-    let get_frame text_only =
-        let frame_ptr = frame 100 40 in
+    let get_frame text_only desired_width desired_height =
+        let frame_ptr = frame desired_width desired_height in
         let width = frame_width () in
         let height = frame_height () in
         let depth = frame_depth () in

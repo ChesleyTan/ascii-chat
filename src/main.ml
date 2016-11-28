@@ -31,7 +31,7 @@ let _ =
     clear_screen ();
     while true; do
         restore_cursor ();
-        time (fun _ -> get_frame !text_only |> colorize |> print_unbuf);
+        time (fun _ -> get_frame !text_only 100 40 |> colorize |> print_unbuf);
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
         ())) |> serialize |> compress |>
