@@ -1,6 +1,7 @@
 TARGET=main
 OBJ=package.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt,lwt.preemptive,lwt.unix
+OPTS=-thread
 
 all: clean sharedlib bindings $(TARGET)
 
@@ -12,16 +13,16 @@ sharedlib: cv.cpp cv.h
 	@(which ldconfig > /dev/null && sudo ldconfig) || true
 
 %.cmi: %.mli
-	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) $< -c
+	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) $< -c
 
 %.cmx: %.ml %.cmi
-	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) $< -c
+	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) $< -c
 
 bindings: sharedlib cv.cmi cv.cmx
 	@echo Building CV bindings
 
 main: bindings $(OBJ)
-	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) cv.cmx $(OBJ) -cclib -lcv -o ascii-chat
+	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx $(OBJ) -cclib -lcv -o ascii-chat
 
 clean:
 	rm -f *.cmi *.cmx *.o libcv.so

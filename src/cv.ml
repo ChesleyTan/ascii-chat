@@ -60,7 +60,7 @@ type image = { data: FastString.t
 module type CvSig = sig
     val coordinate_to_index: (int * int * int) -> (int * int * int) -> int
     val cleanup: unit -> unit
-    val colorize: image -> string
+    val colorize: bool -> image -> string
     val get_frame: bool -> int -> int -> image
 end
 
@@ -487,11 +487,11 @@ module Cv: CvSig = struct
 
     (* Colorizes pixels using the given array of colors for each pixel. The
      * length of pixels and colors are given by [size] *)
-    let colorize {data; colors; width; height; text_only} =
+    let colorize force_text_only {data; colors; width; height; text_only} =
         (* Make enough room for ANSI color sequences for each character. A
         * multiplier of 22 should be plenty. *)
         let size = FastString.length data in
-        let buf = FastString.create (size * 22) in
+        let buf = FastString.create (size * 22 + (String.length ansi_reset)) in
         (* Avoid duplicate color control sequences *)
         let last_color = ref "" in
         for i = 0 to size - 1 do
@@ -503,7 +503,8 @@ module Cv: CvSig = struct
                 begin
                     last_color := color;
                     FastString.append buf @@
-                        (get_ansi color text_only) ^ (string_of_char pixel)
+                        (get_ansi color (text_only || force_text_only)) ^
+                        (string_of_char pixel)
                 end
         done;
         FastString.append buf ansi_reset;

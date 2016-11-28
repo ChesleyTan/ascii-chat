@@ -1,4 +1,4 @@
-open Cv.Cv
+open Cv
 open Package
 open Arg
 open Lwt
@@ -27,6 +27,13 @@ let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
 
 let help_header = "Available options: "
 
+let my_image = ref { data = (FastString.of_string "")
+                   ; colors = [|""|]
+                   ; width = 0
+                   ; height = 0
+                   ; text_only  = true
+                   }
+
 let main () =
     Arg.parse specs ignore help_header;
     let terminal =
@@ -42,9 +49,15 @@ let main () =
         end
     else ();
     clear_screen ();
+    let _ = Lwt_preemptive.detach (fun () ->
+        while true; do
+            my_image := Cv.get_frame !text_only 80 32;
+            Unix.sleepf 0.1 |> ignore
+        done
+    ) () in
     while true; do
         restore_cursor ();
-        time (fun _ -> get_frame !text_only 80 32 |> colorize |> print_unbuf);
+        time (fun _ -> !my_image |> Cv.colorize !text_only |> print_unbuf);
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
         ())) |> serialize |> compress |>
@@ -52,7 +65,7 @@ let main () =
         *)
         Unix.sleepf 0.1;
     done;
-    cleanup ();
+    Cv.cleanup ();
     terminal
 
 let _ = Lwt_main.run (main ())
