@@ -1,4 +1,4 @@
 #!/bin/bash
 
 sudo apt install libffi-dev
-opam install ctypes ctypes-foreign yojson lz4
+opam install ctypes ctypes-foreign yojson lz4 lambda-term lwt

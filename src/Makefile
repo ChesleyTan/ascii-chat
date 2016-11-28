@@ -1,6 +1,6 @@
 TARGET=main
 OBJ=package.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt
 
 all: clean sharedlib bindings $(TARGET)
 
