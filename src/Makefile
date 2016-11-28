@@ -9,7 +9,7 @@ sharedlib: cv.cpp cv.h
 	chmod 755 libcv.so
 	sudo rm -f /usr/local/lib/libcv.so
 	sudo cp libcv.so /usr/local/lib
-	sudo ldconfig || echo "Warning: ldconfig not found"
+	@(which ldconfig && sudo ldconfig) || true
 
 %.cmi: %.mli
 	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) $< -c
