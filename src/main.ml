@@ -22,7 +22,10 @@ let _ =
     while true; do
         restore_cursor ();
         time (fun _ -> get_frame false |> colorize |> print_unbuf);
-        (*time (fun _ -> get_frame false |> pack |> serialize |> print_unbuf);*)
-        Unix.sleepf 2.1;
+        (*
+        time (fun _ -> get_frame false |> pack |> serialize |> compress |>
+        decompress |> deserialize |> unpack |> colorize |> print_unbuf);
+        *)
+        Unix.sleepf 0.1;
     done;
     cleanup ()

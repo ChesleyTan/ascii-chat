@@ -1,6 +1,6 @@
 TARGET=main
 OBJ=package.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4
 
 all: sharedlib bindings $(TARGET)
 
@@ -24,4 +24,4 @@ main: bindings $(OBJ)
 	ocamlfind ocamlopt -linkpkg -package $(OCAMLPKGS) cv.cmx $(OBJ) -cclib -lcv -o ascii-chat
 
 clean:
-	rm -f *.cmi *.cmx *.o libcv.so ascii-chat a.out
+	rm -f *.cmi *.cmx *.o libcv.so

@@ -35,3 +35,14 @@ let deserialize json_string =
                  }
        }
 
+let compress json_string =
+    let strlen = String.length json_string |> string_of_int
+    in (strlen ^ ";" ^ (LZ4.Bytes.compress json_string))
+
+let decompress compressed =
+    let sep = String.index compressed ';' in
+    let strlen = String.sub compressed 0 sep |> int_of_string in
+    let payload =
+        String.sub compressed (sep + 1) (String.length compressed - sep - 1)
+    in LZ4.Bytes.decompress ~length:strlen payload
+
