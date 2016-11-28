@@ -2,7 +2,7 @@ TARGET=main
 OBJ=package.cmx main.cmx
 OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4
 
-all: sharedlib bindings $(TARGET)
+all: clean sharedlib bindings $(TARGET)
 
 sharedlib: cv.cpp cv.h
 	g++ -shared -fPIC -std=c++11 -pedantic -Wall cv.cpp -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -o libcv.so

@@ -1,9 +1,11 @@
 open Cv
 type package
 
-val pack: image -> string -> package
+val get_timestamp: unit -> int
 
-val unpack: package -> (image * string)
+val pack: image -> string -> int -> package
+
+val unpack: package -> (image * string * int)
 
 val serialize: package -> string
 
