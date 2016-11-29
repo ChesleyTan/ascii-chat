@@ -42,7 +42,7 @@ let main () =
             exit 1
         end
     else ();
-    let layout = Two in
+    let layout = Three in
     let img_dims = image_dimensions layout in
     let img_width = ref @@ fst img_dims
     and img_height = ref @@ snd img_dims in
@@ -60,6 +60,8 @@ let main () =
                   |> copy_to_grid (pane_start_coord 1 layout);
         !my_image |> Cv.colorize !text_only
                   |> copy_to_grid (pane_start_coord 2 layout);
+        !my_image |> Cv.colorize !text_only
+                  |> copy_to_grid (pane_start_coord 3 layout);
         print_grid ();
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp

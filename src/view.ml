@@ -66,6 +66,33 @@ let outline window =
                     end
                 done;
             done
+        | Three ->
+            for r = 0 to (max_rows - 1) do
+                for c = 0 to (max_cols - 1) do
+                    begin
+                        if r = 0 || r = (max_rows - 1) then
+                            if c = 0 || c = (max_cols - 1) then
+                                grid.(r).(c) <- "+"
+                            else
+                                grid.(r).(c) <- "-"
+                        else if c = 0 || c = (max_cols - 1) then
+                            if r <> 0 && r <> (max_rows - 1) then
+                                grid.(r).(c) <- "|"
+                            else ()
+                        else if c = 54 || c = 55 || c = 109 || c = 110 then
+                            if r < 22 then
+                                grid.(r).(c) <- "|"
+                            else if r = 22 then
+                                grid.(r).(c) <- "+"
+                            else
+                                grid.(r).(c) <- " "
+                        else if r = 22 then
+                            grid.(r).(c) <- "-"
+                        else
+                            grid.(r).(c) <- " "
+                    end
+                done;
+            done
         | _ -> failwith "unimplemented"
 
 let copy_to_grid (start_row, start_col) g =
@@ -91,6 +118,7 @@ let print_grid () =
 let image_dimensions window = match window with
     | One -> (105, 43)
     | Two -> (80, 32)
+    | Three -> (53, 21)
     | _ -> failwith "unimplemented"
 
 let pane_start_coord pane window = match (pane, window) with
@@ -99,4 +127,8 @@ let pane_start_coord pane window = match (pane, window) with
     | 1, Two -> (1, 1)
     | 2, Two -> (1, 83)
     | 3, Two -> (34, 1)
+    | 1, Three -> (1, 1)
+    | 2, Three -> (1, 56)
+    | 3, Three -> (1, 111)
+    | 4, Three -> (23, 1)
     | _ -> failwith "unimplemented"
