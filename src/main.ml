@@ -42,7 +42,8 @@ let main () =
             exit 1
         end
     else ();
-    let img_dims = image_dimensions One in
+    let layout = Two in
+    let img_dims = image_dimensions layout in
     let img_width = ref @@ fst img_dims
     and img_height = ref @@ snd img_dims in
     clear_screen ();
@@ -54,9 +55,11 @@ let main () =
     ) () in
     while true; do
         restore_cursor ();
-        outline One;
+        outline layout;
         !my_image |> Cv.colorize !text_only
-                  |> copy_to_grid (pane_start_coord 1 One);
+                  |> copy_to_grid (pane_start_coord 1 layout);
+        !my_image |> Cv.colorize !text_only
+                  |> copy_to_grid (pane_start_coord 2 layout);
         print_grid ();
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp

@@ -17,10 +17,6 @@ let clear_screen () =
 let restore_cursor () =
     print_unbuf "\x1B[;H"
 
-let image_dimensions window = match window with
-    | One -> (105, 43)
-    | _ -> failwith "unimplemented"
-
 let outline window =
     match window with
         | One ->
@@ -38,6 +34,33 @@ let outline window =
                             else ()
                         else if c = 106 then
                             grid.(r).(c) <- "|"
+                        else
+                            grid.(r).(c) <- " "
+                    end
+                done;
+            done
+        | Two ->
+            for r = 0 to (max_rows - 1) do
+                for c = 0 to (max_cols - 1) do
+                    begin
+                        if r = 0 || r = (max_rows - 1) then
+                            if c = 0 || c = (max_cols - 1) then
+                                grid.(r).(c) <- "+"
+                            else
+                                grid.(r).(c) <- "-"
+                        else if c = 0 || c = (max_cols - 1) then
+                            if r <> 0 && r <> (max_rows - 1) then
+                                grid.(r).(c) <- "|"
+                            else ()
+                        else if c = 81 || c = 82 then
+                            if r < 33 then
+                                grid.(r).(c) <- "|"
+                            else if r = 33 then
+                                grid.(r).(c) <- "+"
+                            else
+                                grid.(r).(c) <- " "
+                        else if r = 33 then
+                            grid.(r).(c) <- "-"
                         else
                             grid.(r).(c) <- " "
                     end
@@ -65,6 +88,15 @@ let print_grid () =
     |> Array.to_list |> String.concat "\n"
     |> print_unbuf
 
+let image_dimensions window = match window with
+    | One -> (105, 43)
+    | Two -> (80, 32)
+    | _ -> failwith "unimplemented"
+
 let pane_start_coord pane window = match (pane, window) with
     | 1, One -> (1, 1)
+    | 2, One -> (1, 107)
+    | 1, Two -> (1, 1)
+    | 2, Two -> (1, 83)
+    | 3, Two -> (34, 1)
     | _ -> failwith "unimplemented"
