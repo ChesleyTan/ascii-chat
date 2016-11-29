@@ -137,6 +137,32 @@ let copy_to_grid (start_row, start_col) g =
                 done
             done
 
+let print_to_grid (start_row, start_col) (max_width, max_height) s =
+    (* NOTE: We are assuming that the provided string has no format characters
+     * that can interfere with the formatting, such as newlines and carriage
+     * returns *)
+    if start_row + max_height >= max_rows
+    || start_col + max_width >= max_cols then
+        failwith "print_to_grid overflow!"
+    else
+        let max_col = start_col + max_width
+        and max_row = start_row + max_height
+        and r = ref start_row
+        and c = ref start_col in
+        for i = 0 to (String.length s - 1) do
+            grid.(!r).(!c) <- String.sub s i 1;
+            incr c;
+            if !c > max_col then
+                begin
+                    c := start_col;
+                    incr r
+                end
+            else ();
+            if !r > max_row then
+                r := start_row
+            else ();
+        done
+
 let print_grid () =
     Array.map (fun xs -> Array.to_list xs |> String.concat "") grid
     |> Array.to_list |> String.concat "\n"
@@ -147,6 +173,12 @@ let image_dimensions window = match window with
     | Two -> (80, 32)
     | Three -> (53, 21)
     | Four -> (53, 21)
+
+let text_dimensions window = match window with
+    | One -> (35, 43)
+    | Two -> (160, 10)
+    | Three -> (160, 21)
+    | Four -> (52, 43)
 
 let pane_start_coord pane window = match (pane, window) with
     | 1, One -> (1, 1)

@@ -82,12 +82,14 @@ let main () =
             if buffer_length > 0 then
                 input_buffer := String.sub !input_buffer 0 (buffer_length - 1)
             else ()
-        else if char_code <> 0 then
+        (* TODO handle enter *)
+        else if char_code <> 0 && char_code <> 10 then
             input_buffer := !input_buffer ^ (String.make 1 inchar)
         else ();
-        print_endline !input_buffer;
         restore_cursor ();
         outline layout;
+        print_to_grid (pane_start_coord 5 layout) (text_dimensions layout)
+            !input_buffer;
         !my_image |> Cv.colorize !text_only
                   |> copy_to_grid (pane_start_coord 1 layout);
         !my_image |> Cv.colorize !text_only
