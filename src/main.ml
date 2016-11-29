@@ -26,8 +26,16 @@ let my_image = ref { data = (FastString.of_string "")
                    ; text_only  = true
                    }
 
+let input_buffer = ref ""
+
 let main () =
     Arg.parse specs ignore help_header;
+    let term_attr = Unix.tcgetattr Unix.stdin in
+    let term_attr_new = { term_attr with Unix.c_icanon = false
+                        ; Unix.c_echo = false
+                        ; Unix.c_vtime = 1
+                        } in
+    Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new;
     let terminal = Lazy.force LTerm.stdout
     in terminal >>= fun term ->
     let term_size = LTerm.size term in
@@ -54,6 +62,30 @@ let main () =
         done
     ) () in
     while true; do
+        let inchar =
+            try
+                begin
+                    Unix.set_nonblock Unix.stdin;
+                    let res = input_char stdin in
+                    Unix.clear_nonblock Unix.stdin; res
+                end
+            with
+                | Sys_blocked_io ->
+                    begin
+                        Unix.clear_nonblock Unix.stdin;
+                        '\x00'
+                    end
+        and buffer_length = String.length !input_buffer in
+        let char_code = Char.code inchar in
+        (* Handle backspace *)
+        if char_code = 8 || char_code = 127 then
+            if buffer_length > 0 then
+                input_buffer := String.sub !input_buffer 0 (buffer_length - 1)
+            else ()
+        else if char_code <> 0 then
+            input_buffer := !input_buffer ^ (String.make 1 inchar)
+        else ();
+        print_endline !input_buffer;
         restore_cursor ();
         outline layout;
         !my_image |> Cv.colorize !text_only
