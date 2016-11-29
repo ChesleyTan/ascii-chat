@@ -93,7 +93,34 @@ let outline window =
                     end
                 done;
             done
-        | _ -> failwith "unimplemented"
+        | Four ->
+            for r = 0 to (max_rows - 1) do
+                for c = 0 to (max_cols - 1) do
+                    begin
+                        if r = 0 || r = (max_rows - 1) then
+                            if c = 0 || c = (max_cols - 1) then
+                                grid.(r).(c) <- "+"
+                            else
+                                grid.(r).(c) <- "-"
+                        else if c = 0 || c = (max_cols - 1) then
+                            if r <> 0 && r <> (max_rows - 1) then
+                                grid.(r).(c) <- "|"
+                            else ()
+                        else if c = 54 || c = 55 || c = 109 || c = 110 then
+                            if r <> 22 then
+                                grid.(r).(c) <- "|"
+                            else
+                                grid.(r).(c) <- "+"
+                        else if r = 22 then
+                            if c < 109 then
+                                grid.(r).(c) <- "-"
+                            else
+                                grid.(r).(c) <- " "
+                        else
+                            grid.(r).(c) <- " "
+                    end
+                done;
+            done
 
 let copy_to_grid (start_row, start_col) g =
     let g_rows = (Array.length g) - 1 in
@@ -119,7 +146,7 @@ let image_dimensions window = match window with
     | One -> (105, 43)
     | Two -> (80, 32)
     | Three -> (53, 21)
-    | _ -> failwith "unimplemented"
+    | Four -> (53, 21)
 
 let pane_start_coord pane window = match (pane, window) with
     | 1, One -> (1, 1)
@@ -131,4 +158,9 @@ let pane_start_coord pane window = match (pane, window) with
     | 2, Three -> (1, 56)
     | 3, Three -> (1, 111)
     | 4, Three -> (23, 1)
-    | _ -> failwith "unimplemented"
+    | 1, Four -> (1, 1)
+    | 2, Four -> (1, 56)
+    | 3, Four -> (23, 1)
+    | 4, Four -> (23, 56)
+    | 5, Four -> (1, 111)
+    | _ -> failwith "Invalid pane number for window layout!"
