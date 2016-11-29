@@ -88,7 +88,7 @@ let main () =
         else ();
         restore_cursor ();
         outline layout;
-        print_to_grid (pane_start_coord 5 layout) (text_dimensions layout)
+        print_to_grid (pane_start_coord 6 layout) (input_dimensions layout)
             !input_buffer;
         !my_image |> Cv.colorize !text_only
                   |> copy_to_grid (pane_start_coord 1 layout);

@@ -11,6 +11,8 @@ val image_dimensions: window -> (int * int)
 
 val text_dimensions: window -> (int * int)
 
+val input_dimensions: window -> (int * int)
+
 val print_unbuf: string -> unit
 
 val clear_screen: unit -> unit

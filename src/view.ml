@@ -34,6 +34,11 @@ let outline window =
                             else ()
                         else if c = 106 then
                             grid.(r).(c) <- "|"
+                        else if r = 41 then
+                            if c > 106 then
+                                grid.(r).(c) <- "_"
+                            else
+                                grid.(r).(c) <- " "
                         else
                             grid.(r).(c) <- " "
                     end
@@ -57,10 +62,14 @@ let outline window =
                                 grid.(r).(c) <- "|"
                             else if r = 33 then
                                 grid.(r).(c) <- "+"
+                            else if r = 42 then
+                                grid.(r).(c) <- "_"
                             else
                                 grid.(r).(c) <- " "
                         else if r = 33 then
                             grid.(r).(c) <- "-"
+                        else if r = 42 then
+                            grid.(r).(c) <- "_"
                         else
                             grid.(r).(c) <- " "
                     end
@@ -84,10 +93,14 @@ let outline window =
                                 grid.(r).(c) <- "|"
                             else if r = 22 then
                                 grid.(r).(c) <- "+"
+                            else if r = 42 then
+                                grid.(r).(c) <- "_"
                             else
                                 grid.(r).(c) <- " "
                         else if r = 22 then
                             grid.(r).(c) <- "-"
+                        else if r = 42 then
+                            grid.(r).(c) <- "_"
                         else
                             grid.(r).(c) <- " "
                     end
@@ -114,6 +127,11 @@ let outline window =
                         else if r = 22 then
                             if c < 109 then
                                 grid.(r).(c) <- "-"
+                            else
+                                grid.(r).(c) <- " "
+                        else if r = 41 then
+                            if c > 110 then
+                                grid.(r).(c) <- "_"
                             else
                                 grid.(r).(c) <- " "
                         else
@@ -145,20 +163,18 @@ let print_to_grid (start_row, start_col) (max_width, max_height) s =
     || start_col + max_width >= max_cols then
         failwith "print_to_grid overflow!"
     else
-        let max_col = start_col + max_width
-        and max_row = start_row + max_height
-        and r = ref start_row
+        let r = ref start_row
         and c = ref start_col in
         for i = 0 to (String.length s - 1) do
             grid.(!r).(!c) <- String.sub s i 1;
             incr c;
-            if !c > max_col then
+            if !c - start_col >= max_width then
                 begin
                     c := start_col;
                     incr r
                 end
             else ();
-            if !r > max_row then
+            if !r - start_row >= max_height then
                 r := start_row
             else ();
         done
@@ -175,24 +191,34 @@ let image_dimensions window = match window with
     | Four -> (53, 21)
 
 let text_dimensions window = match window with
-    | One -> (35, 43)
-    | Two -> (160, 10)
-    | Three -> (160, 21)
-    | Four -> (52, 43)
+    | One -> (57, 40)
+    | Two -> (163, 8)
+    | Three -> (163, 19)
+    | Four -> (52, 40)
+
+let input_dimensions window = match window with
+    | One -> (57, 2)
+    | Two -> (163, 1)
+    | Three -> (163, 1)
+    | Four -> (52, 2)
 
 let pane_start_coord pane window = match (pane, window) with
     | 1, One -> (1, 1)
     | 2, One -> (1, 107)
+    | 3, One -> (42, 107)
     | 1, Two -> (1, 1)
     | 2, Two -> (1, 83)
     | 3, Two -> (34, 1)
+    | 4, Two -> (43, 1)
     | 1, Three -> (1, 1)
     | 2, Three -> (1, 56)
     | 3, Three -> (1, 111)
     | 4, Three -> (23, 1)
+    | 5, Three -> (43, 1)
     | 1, Four -> (1, 1)
     | 2, Four -> (1, 56)
     | 3, Four -> (23, 1)
     | 4, Four -> (23, 56)
     | 5, Four -> (1, 111)
+    | 6, Four -> (42, 111)
     | _ -> failwith "Invalid pane number for window layout!"
