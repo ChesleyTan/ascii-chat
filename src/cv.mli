@@ -22,7 +22,7 @@ type image = { data: FastString.t
 module type CvSig = sig
     val coordinate_to_index: (int * int * int) -> (int * int * int) -> int
     val cleanup: unit -> unit
-    val colorize: bool -> image -> string
+    val colorize: bool -> image -> string array array
     val get_frame: bool -> int -> int -> image
 end
 

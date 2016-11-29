@@ -60,7 +60,7 @@ type image = { data: FastString.t
 module type CvSig = sig
     val coordinate_to_index: (int * int * int) -> (int * int * int) -> int
     val cleanup: unit -> unit
-    val colorize: bool -> image -> string
+    val colorize: bool -> image -> string array array
     val get_frame: bool -> int -> int -> image
 end
 
@@ -458,8 +458,7 @@ module Cv: CvSig = struct
         let c2i = coordinate_to_index (height, width, depth) in
         let get_int col row dep =
             get frame_array (c2i (col, row, dep)) |> Unsigned.UChar.to_int in
-        (* Allocate space for each line and newline *)
-        let size = height * (width + 1) in
+        let size = height * width in
         let buf = FastString.create size in
         let colors = Array.make size "" in
         let idx = ref 0 in
@@ -476,8 +475,6 @@ module Cv: CvSig = struct
                     ();
                 incr idx
             done;
-            FastString.append_char buf '\n';
-            incr idx
         done;
         { data = buf
         ; colors = colors
@@ -488,25 +485,29 @@ module Cv: CvSig = struct
     (* Colorizes pixels using the given array of colors for each pixel. The
      * length of pixels and colors are given by [size] *)
     let colorize force_text_only {data; colors; width; height; text_only} =
-        (* Make enough room for ANSI color sequences for each character. A
-        * multiplier of 22 should be plenty. *)
-        let size = FastString.length data in
-        let buf = FastString.create (size * 22 + (String.length ansi_reset)) in
+        let grid = Array.make_matrix height width "" in
+        let c2i r c = r * width + c in
+        let last_row = height - 1
+        and last_col = width - 1 in
         (* Avoid duplicate color control sequences *)
         let last_color = ref "" in
-        for i = 0 to size - 1 do
-            let color = Array.get colors i
-            and pixel = FastString.get data i in
-            if color = !last_color then
-                FastString.append buf (string_of_char pixel)
-            else
-                begin
-                    last_color := color;
-                    FastString.append buf @@
-                        (get_ansi color (text_only || force_text_only)) ^
-                        (string_of_char pixel)
-                end
+        for row = 0 to last_row do
+            for col = 0 to last_col do
+                let idx = c2i row col in
+                let color = Array.get colors idx
+                and pixel = FastString.get data idx in
+                if color = !last_color then
+                    grid.(row).(col) <- (string_of_char pixel)
+                else
+                    begin
+                        last_color := color;
+                        grid.(row).(col) <-
+                            (get_ansi color (text_only || force_text_only)) ^
+                            (string_of_char pixel);
+                    end
+            done;
+            grid.(row).(last_col) <- grid.(row).(last_col) ^ ansi_reset;
+            last_color := ""
         done;
-        FastString.append buf ansi_reset;
-        FastString.to_string buf
+        grid
 end

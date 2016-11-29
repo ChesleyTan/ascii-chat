@@ -1,16 +1,8 @@
-open Cv
-open Package
 open Arg
 open Lwt
-
-let print_unbuf s =
-    Printf.printf "%s%!" s
-
-let clear_screen () =
-    print_unbuf "\x1B[2J"
-
-let restore_cursor () =
-    print_unbuf "\x1B[;H"
+open Cv
+open Package
+open View
 
 let time f =
     let start = Unix.gettimeofday () in
@@ -36,28 +28,36 @@ let my_image = ref { data = (FastString.of_string "")
 
 let main () =
     Arg.parse specs ignore help_header;
-    let terminal =
-        LTerm.create Lwt_unix.stdin Lwt_io.stdin Lwt_unix.stdout Lwt_io.stdout
+    let terminal = Lazy.force LTerm.stdout
     in terminal >>= fun term ->
     let term_size = LTerm.size term in
     let term_width = LTerm_geom.cols term_size
     and term_height = LTerm_geom.rows term_size in
-    if term_width < 160 || term_height < 42 then
+    if term_width < max_cols || term_height < max_rows then
         begin
-            print_endline "Terminal dimensions must be at least 160 x 42!";
+            print_endline @@ "Terminal dimensions must be at least " ^
+                             (string_of_int max_cols) ^
+                             " x " ^
+                             (string_of_int max_rows);
             exit 1
         end
     else ();
+    let img_dims = image_dimensions One in
+    let img_width = ref @@ fst img_dims
+    and img_height = ref @@ snd img_dims in
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->
         while true; do
-            my_image := Cv.get_frame !text_only 80 32;
+            my_image := Cv.get_frame !text_only !img_width !img_height;
             Unix.sleepf 0.1 |> ignore
         done
     ) () in
     while true; do
         restore_cursor ();
-        time (fun _ -> !my_image |> Cv.colorize !text_only |> print_unbuf);
+        outline One;
+        !my_image |> Cv.colorize !text_only
+                  |> copy_to_grid (pane_start_coord 1 One);
+        print_grid ();
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
         ())) |> serialize |> compress |>
@@ -68,4 +68,5 @@ let main () =
     Cv.cleanup ();
     terminal
 
-let _ = Lwt_main.run (main ())
+let _ =
+    Lwt_main.run (main ())
