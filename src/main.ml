@@ -36,6 +36,7 @@ let main () =
                         ; Unix.c_vtime = 1
                         } in
     Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new;
+    (* TODO remove dependency on lambda-term *)
     let terminal = Lazy.force LTerm.stdout
     in terminal >>= fun term ->
     let term_size = LTerm.size term in

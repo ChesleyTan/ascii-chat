@@ -157,8 +157,7 @@ let copy_to_grid (start_row, start_col) g =
 
 let print_to_grid (start_row, start_col) (max_width, max_height) s =
     (* NOTE: We are assuming that the provided string has no format characters
-     * that can interfere with the formatting, such as newlines and carriage
-     * returns *)
+     * other than newlines *)
     if start_row + max_height >= max_rows
     || start_col + max_width >= max_cols then
         failwith "print_to_grid overflow!"
@@ -166,9 +165,14 @@ let print_to_grid (start_row, start_col) (max_width, max_height) s =
         let r = ref start_row
         and c = ref start_col in
         for i = 0 to (String.length s - 1) do
-            grid.(!r).(!c) <- String.sub s i 1;
-            incr c;
-            if !c - start_col >= max_width then
+            let sub = String.sub s i 1 in
+            if sub <> "\n" then
+                begin
+                    grid.(!r).(!c) <- sub;
+                    incr c;
+                end
+            else ();
+            if !c - start_col >= max_width || sub = "\n" then
                 begin
                     c := start_col;
                     incr r
