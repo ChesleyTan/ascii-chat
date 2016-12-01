@@ -444,7 +444,7 @@ module Cv: CvSig = struct
     (* ANSI escape sequence for 256-color *)
     let get_ansi c text_only =
         if text_only then
-            "\x1B[38;5;" ^ c ^ "m"
+            ""
         else
             "\x1B[38;5;" ^ c ^ "m" ^
             "\x1B[48;5;" ^ c ^ "m"
