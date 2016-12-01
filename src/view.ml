@@ -198,13 +198,13 @@ let text_dimensions window = match window with
     | One -> (57, 40)
     | Two -> (163, 8)
     | Three -> (163, 19)
-    | Four -> (52, 40)
+    | Four -> (53, 40)
 
 let input_dimensions window = match window with
     | One -> (57, 2)
     | Two -> (163, 1)
     | Three -> (163, 1)
-    | Four -> (52, 2)
+    | Four -> (53, 2)
 
 let pane_start_coord pane window = match (pane, window) with
     | 1, One -> (1, 1)
