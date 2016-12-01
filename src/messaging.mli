@@ -1,5 +1,9 @@
-val history_buffer: string list
+val history_buffer: string list ref 
 
-val add_to_buffer: string -> string -> string -> string list
+(*val message_mapping = ('_a, '_b) Hashtbl.t *)
 
-val to_string: string list -> string
+val add_to_buffer: string -> string -> string -> unit
+
+val refresh_buffer: string -> string -> string -> unit
+
+val to_string: string
