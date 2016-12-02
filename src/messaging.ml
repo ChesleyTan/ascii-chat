@@ -14,7 +14,7 @@ let refresh_buffer user message timestamp =
     if Hashtbl.mem message_mapping user && Hashtbl.find
         message_mapping user = message^timestamp
     then ()
-    else let _ = Hashtbl.add message_mapping user (message^timestamp) in 
+    else let _ = Hashtbl.replace message_mapping user (message^timestamp) in 
         add_to_buffer user message timestamp
 
 (*Calling to_string should return a string of the chat history*)
