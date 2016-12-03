@@ -1,9 +1,8 @@
-val history_buffer: string list ref 
+open Package
+open Cv
 
-(*val message_mapping = ('_a, '_b) Hashtbl.t *)
+val add_to_history_buffer: string -> package -> unit
 
-val add_to_history_buffer: string -> string -> string -> unit
+val refresh_history_buffer: string -> package -> unit
 
-val refresh_history_buffer: string -> string -> string -> unit
-
-val to_string: string
+val to_string: unit -> string
