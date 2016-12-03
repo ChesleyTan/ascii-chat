@@ -1,5 +1,5 @@
 TARGET=main
-OBJ=package.cmx view.cmx messaging.cmx main.cmx
+OBJ=package.cmx view.cmx messaging.cmx state.cmx main.cmx
 OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt,lwt.preemptive,lwt.unix
 OPTS=-thread
 
