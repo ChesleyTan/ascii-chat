@@ -11,6 +11,10 @@ val serialize: package -> string
 
 val deserialize: string -> package
 
-val compress: string -> string
+val encrypt: string -> string
 
-val decompress: string -> string
+val decrypt: string -> string
+
+val get_encryption_key: unit -> string
+
+val set_encryption_key: string -> unit

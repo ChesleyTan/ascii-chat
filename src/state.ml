@@ -80,4 +80,3 @@ let get_input_buffer_length () = String.length !input_buffer
 
 let get_packages () =
     Hashtbl.fold (fun k v acc -> v::acc) package_mapping []
-

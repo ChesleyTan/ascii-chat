@@ -105,11 +105,6 @@ let main () =
         else ();
         restore_cursor ();
         render !text_only;
-        (*
-        time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
-        ())) |> serialize |> compress |>
-        decompress |> deserialize |> unpack |> (fun (a,b,c) -> a) |> colorize |> print_unbuf);
-        *)
         Unix.sleepf 0.1;
     done;
     Cv.cleanup ();

@@ -5,6 +5,9 @@ type package = { image: image
                ; timestamp: int (* Time since epoch in milliseconds *)
                }
 
+(* AES encryption key *)
+let encryption_key = ref "0123456789abcdef"
+
 let get_timestamp () = Unix.gettimeofday () *. 1000. |> int_of_float
 
 let pack image text timestamp = {image; text; timestamp}
@@ -51,14 +54,26 @@ let deserialize json_string =
        ; timestamp = timestamp
        }
 
-let compress json_string =
-    let strlen = String.length json_string |> string_of_int
-    in (strlen ^ ";" ^ (LZ4.Bytes.compress json_string))
+let get_encryption_key () = !encryption_key
 
-let decompress compressed =
-    let sep = String.index compressed ';' in
-    let strlen = String.sub compressed 0 sep |> int_of_string in
-    let payload =
-        String.sub compressed (sep + 1) (String.length compressed - sep - 1)
-    in LZ4.Bytes.decompress ~length:strlen payload
+let set_encryption_key key = encryption_key := key
 
+let encrypt json_string =
+    let compressor = Cryptokit.Zlib.compress ()
+    and aes = new Cryptokit.Block.aes_encrypt (get_encryption_key ()) in
+    let transform = new Cryptokit.Block.cipher_padded_encrypt
+    Cryptokit.Padding.length aes |> Cryptokit.compose compressor in
+    transform#put_string json_string;
+    transform#finish;
+    transform#get_string
+
+let decrypt ciphertext =
+    let uncompressor = Cryptokit.Zlib.uncompress ()
+    and aes = new Cryptokit.Block.aes_decrypt (get_encryption_key ()) in
+    let transform =
+        Cryptokit.compose
+        (new Cryptokit.Block.cipher_padded_decrypt Cryptokit.Padding.length aes)
+        uncompressor in
+    transform#put_string ciphertext;
+    transform#finish;
+    transform#get_string
