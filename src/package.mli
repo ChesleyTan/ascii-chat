@@ -18,3 +18,7 @@ val decrypt: string -> string
 val get_encryption_key: unit -> string
 
 val set_encryption_key: string -> unit
+
+val generate_encryption_key: string -> unit
+
+val is_encryption_key_set: unit -> bool

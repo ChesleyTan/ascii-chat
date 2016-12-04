@@ -6,7 +6,7 @@ type package = { image: image
                }
 
 (* AES encryption key *)
-let encryption_key = ref "0123456789abcdef"
+let encryption_key = ref ""
 
 let get_timestamp () = Unix.gettimeofday () *. 1000. |> int_of_float
 
@@ -77,3 +77,10 @@ let decrypt ciphertext =
     transform#put_string ciphertext;
     transform#finish;
     transform#get_string
+
+let generate_encryption_key key =
+    let hash = Cryptokit.Hash.sha256 () in
+    hash#add_string key;
+    encryption_key := hash#result
+
+let is_encryption_key_set () = !encryption_key <> ""

@@ -13,6 +13,7 @@ let time f =
     ret
 
 let text_only = ref false
+let cryptokey = ref ""
 
 let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
             ; ("-t", Arg.Set text_only, "Enable text-only mode")
@@ -24,6 +25,7 @@ let img_width = ref 0
 let img_height = ref 0
 
 (* TODO add API functions for networking module to call *)
+(* TODO add MACS and DH key exchange *)
 
 (* Adapted from: http://pleac.sourceforge.net/pleac_ocaml/userinterfaces.html
  * Section "Determining Terminal or Window Size"
@@ -61,8 +63,15 @@ let set_non_canonical_term () =
     Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new
 
 let main () =
-    Arg.parse specs ignore help_header;
-    set_non_canonical_term();
+    Arg.parse specs generate_encryption_key help_header;
+    if not @@ is_encryption_key_set () then
+        begin
+            print_endline @@ "You must specify a key for encryption.\n" ^
+                            "Usage: ./ascii-chat <key>";
+            exit 1
+        end
+    else ();
+    set_non_canonical_term ();
     check_terminal_dimensions ();
     (* TODO get the user's ip and port *)
     init_state "PLACEHOLDER_IP:PLACEHOLDER_PORT";
