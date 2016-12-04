@@ -25,37 +25,54 @@ let img_height = ref 0
 
 (* TODO add API functions for networking module to call *)
 
-let main () =
-    Arg.parse specs ignore help_header;
+(* Adapted from: http://pleac.sourceforge.net/pleac_ocaml/userinterfaces.html
+ * Section "Determining Terminal or Window Size"
+ *)
+let get_terminal_dimensions () =
+    let input_channel = Unix.open_process_in "stty size" in
+    let ib = Scanf.Scanning.from_channel input_channel in
+    try
+        Scanf.bscanf ib "%d %d"
+            (fun rows cols ->
+                Unix.close_process_in input_channel |> ignore;
+                Some (rows, cols)
+            )
+    with _ -> None
+
+let check_terminal_dimensions () =
+    match get_terminal_dimensions () with
+        | Some (rows, cols) when cols < max_cols || rows < max_rows ->
+            print_endline @@ "Terminal dimensions must be at least " ^
+                            (string_of_int max_cols) ^
+                            " x " ^
+                            (string_of_int max_rows);
+            exit 1
+        | _ -> ()
+
+(* Adapted from: http://pleac.sourceforge.net/pleac_ocaml/userinterfaces.html
+ * Section: "Reading from the Keyboard"
+ *)
+let set_non_canonical_term () =
     let term_attr = Unix.tcgetattr Unix.stdin in
     let term_attr_new = { term_attr with Unix.c_icanon = false
                         ; Unix.c_echo = false
                         ; Unix.c_vtime = 1
                         } in
-    Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new;
-    (* TODO remove dependency on lambda-term *)
-    let terminal = Lazy.force LTerm.stdout
-    in terminal >>= fun term ->
-    let term_size = LTerm.size term in
-    let term_width = LTerm_geom.cols term_size
-    and term_height = LTerm_geom.rows term_size in
-    if term_width < max_cols || term_height < max_rows then
-        begin
-            print_endline @@ "Terminal dimensions must be at least " ^
-                             (string_of_int max_cols) ^
-                             " x " ^
-                             (string_of_int max_rows);
-            exit 1
-        end
-    else ();
+    Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new
+
+let main () =
+    Arg.parse specs ignore help_header;
+    set_non_canonical_term();
+    check_terminal_dimensions ();
+    (* TODO get the user's ip and port *)
     init_state "PLACEHOLDER_IP:PLACEHOLDER_PORT";
-    let layout = get_num_users () |> layout_for_num_users in
-    let img_dims = image_dimensions layout in
-    img_width := fst img_dims;
-    img_height := snd img_dims;
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->
         while true; do
+            let layout = get_num_users () |> layout_for_num_users in
+            let img_dims = image_dimensions layout in
+            img_width := fst img_dims;
+            img_height := snd img_dims;
             Cv.get_frame !text_only !img_width !img_height |> log_image;
             Unix.sleepf 0.1 |> ignore
         done
@@ -83,7 +100,7 @@ let main () =
             else ()
         else if char_code = 10 then
             log_message ()
-        else if char_code <> 0 then
+        else if char_code <> 0 && char_code <> 27 then
             update_input_buffer inchar
         else ();
         restore_cursor ();
@@ -96,7 +113,7 @@ let main () =
         Unix.sleepf 0.1;
     done;
     Cv.cleanup ();
-    terminal
+    return ()
 
 let _ =
     Lwt_main.run (main ())

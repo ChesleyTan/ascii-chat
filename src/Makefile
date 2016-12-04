@@ -1,6 +1,6 @@
 TARGET=main
 OBJ=package.cmx messaging.cmx state.cmx view.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt,lwt.preemptive,lwt.unix
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lwt,lwt.preemptive,lwt.unix
 OPTS=-thread
 
 all: clean sharedlib bindings $(TARGET)
