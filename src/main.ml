@@ -62,6 +62,33 @@ let set_non_canonical_term () =
                         } in
     Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new
 
+let handle_key_input () =
+    let inchar =
+        try
+            begin
+                Unix.set_nonblock Unix.stdin;
+                let res = input_char stdin in
+                Unix.clear_nonblock Unix.stdin; res
+            end
+        with
+            | Sys_blocked_io ->
+                begin
+                    Unix.clear_nonblock Unix.stdin;
+                    '\x00'
+                end
+    and buffer_length = get_input_buffer_length () in
+    let char_code = Char.code inchar in
+    (* Handle backspace *)
+    if char_code = 8 || char_code = 127 then
+        if buffer_length > 0 then
+            delete_input_buffer ()
+        else ()
+    else if char_code = 10 then
+        log_message ()
+    else if char_code <> 0 && char_code <> 27 then
+        update_input_buffer inchar
+    else ()
+
 let main () =
     Arg.parse specs generate_encryption_key help_header;
     if not @@ is_encryption_key_set () then
@@ -87,31 +114,7 @@ let main () =
         done
     ) () in
     while true; do
-        let inchar =
-            try
-                begin
-                    Unix.set_nonblock Unix.stdin;
-                    let res = input_char stdin in
-                    Unix.clear_nonblock Unix.stdin; res
-                end
-            with
-                | Sys_blocked_io ->
-                    begin
-                        Unix.clear_nonblock Unix.stdin;
-                        '\x00'
-                    end
-        and buffer_length = get_input_buffer_length () in
-        let char_code = Char.code inchar in
-        (* Handle backspace *)
-        if char_code = 8 || char_code = 127 then
-            if buffer_length > 0 then
-                delete_input_buffer ()
-            else ()
-        else if char_code = 10 then
-            log_message ()
-        else if char_code <> 0 && char_code <> 27 then
-            update_input_buffer inchar
-        else ();
+        handle_key_input ();
         restore_cursor ();
         render !text_only;
         Unix.sleepf 0.1;
