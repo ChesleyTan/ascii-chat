@@ -81,8 +81,9 @@ let main () =
             if buffer_length > 0 then
                 delete_input_buffer ()
             else ()
-        (* TODO handle enter *)
-        else if char_code <> 0 && char_code <> 10 then
+        else if char_code = 10 then
+            log_message ()
+        else if char_code <> 0 then
             update_input_buffer inchar
         else ();
         restore_cursor ();

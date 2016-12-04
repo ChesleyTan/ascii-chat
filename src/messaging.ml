@@ -2,7 +2,7 @@ open Package
 open Cv
 
 (* History buffer stored as a list *)
-let history_buffer = ref [""]
+let history_buffer: string list ref = ref []
 
 (* Hashtable for keeping track of timestamp of last messages for each user *)
 let message_mapping = Hashtbl.create 1
@@ -24,10 +24,14 @@ let refresh_history_buffer user package =
     let (_, _, timestamp) = unpack package in
         if Hashtbl.mem message_mapping user
         && Hashtbl.find message_mapping user < timestamp
-        then ()
-        else
+        then
             begin
                 Hashtbl.replace message_mapping user timestamp;
+                add_to_history_buffer user package
+            end
+        else
+            begin
+                Hashtbl.add message_mapping user timestamp;
                 add_to_history_buffer user package
             end
 
