@@ -3,6 +3,7 @@ open Lwt
 open Cv
 open Package
 open View
+open State
 
 let time f =
     let start = Unix.gettimeofday () in
@@ -19,16 +20,9 @@ let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
 
 let help_header = "Available options: "
 
-let my_image = ref { data = (FastString.of_string "")
-                   ; colors = [|""|]
-                   ; width = 0
-                   ; height = 0
-                   ; text_only  = true
-                   }
+let img_width = ref 0
+let img_height = ref 0
 
-let input_buffer = ref ""
-
-(* TODO integrate state module *)
 (* TODO add API functions for networking module to call *)
 
 let main () =
@@ -54,14 +48,15 @@ let main () =
             exit 1
         end
     else ();
-    let layout = Four in
+    init_state "PLACEHOLDER_IP:PLACEHOLDER_PORT";
+    let layout = get_num_users () |> layout_for_num_users in
     let img_dims = image_dimensions layout in
-    let img_width = ref @@ fst img_dims
-    and img_height = ref @@ snd img_dims in
+    img_width := fst img_dims;
+    img_height := snd img_dims;
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->
         while true; do
-            my_image := Cv.get_frame !text_only !img_width !img_height;
+            Cv.get_frame !text_only !img_width !img_height |> log_image;
             Unix.sleepf 0.1 |> ignore
         done
     ) () in
@@ -79,30 +74,19 @@ let main () =
                         Unix.clear_nonblock Unix.stdin;
                         '\x00'
                     end
-        and buffer_length = String.length !input_buffer in
+        and buffer_length = get_input_buffer_length () in
         let char_code = Char.code inchar in
         (* Handle backspace *)
         if char_code = 8 || char_code = 127 then
             if buffer_length > 0 then
-                input_buffer := String.sub !input_buffer 0 (buffer_length - 1)
+                delete_input_buffer ()
             else ()
         (* TODO handle enter *)
         else if char_code <> 0 && char_code <> 10 then
-            input_buffer := !input_buffer ^ (String.make 1 inchar)
+            update_input_buffer inchar
         else ();
         restore_cursor ();
-        outline layout;
-        print_to_grid (pane_start_coord 6 layout) (input_dimensions layout)
-            !input_buffer;
-        !my_image |> Cv.colorize !text_only
-                  |> copy_to_grid (pane_start_coord 1 layout);
-        !my_image |> Cv.colorize !text_only
-                  |> copy_to_grid (pane_start_coord 2 layout);
-        !my_image |> Cv.colorize !text_only
-                  |> copy_to_grid (pane_start_coord 3 layout);
-        !my_image |> Cv.colorize !text_only
-                  |> copy_to_grid (pane_start_coord 4 layout);
-        print_grid ();
+        render !text_only;
         (*
         time (fun _ -> get_frame false |> (fun x -> pack x "text" (get_timestamp
         ())) |> serialize |> compress |>

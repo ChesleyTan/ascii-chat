@@ -29,4 +29,6 @@ val print_grid: unit -> unit
 
 val pane_start_coord: int -> window -> (int * int)
 
+val layout_for_num_users: int -> window
+
 val render: bool -> unit

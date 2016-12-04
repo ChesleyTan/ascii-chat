@@ -1,5 +1,6 @@
 open Messaging
 open Package
+open Cv
 
 (* Identity of the current user *)
 let current_user = ref ""
@@ -20,6 +21,16 @@ let delete_input_buffer () =
 
 (* Maps user identities to the last package received for that user *)
 let package_mapping = Hashtbl.create 1
+
+let init_state curr_user =
+    let dummy_image = { data = (FastString.of_string "")
+                      ; colors = [|""|]
+                      ; width = 0
+                      ; height = 0
+                      ; text_only  = true
+                      } in
+    current_user := curr_user;
+    pack dummy_image "" 0 |> Hashtbl.add package_mapping curr_user
 
 (* Updates user package with text message from the input box buffer, and posts
  * contents of text buffer to the history buffer in the messaging module for
@@ -64,6 +75,8 @@ let refresh_package user package =
 let get_num_users () = Hashtbl.length package_mapping
 
 let get_input_buffer_contents () = !input_buffer
+
+let get_input_buffer_length () = String.length !input_buffer
 
 let get_packages () =
     Hashtbl.fold (fun k v acc -> v::acc) package_mapping []
