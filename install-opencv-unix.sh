@@ -17,7 +17,7 @@ echo -e "${YELLOW}Installing opencv-$OPENCV_VERSION for Mac/Linux${RESET} ...\n"
 echo -e "================================================================================
 Make sure that you have the required dependencies!
 Linux:
-    sudo apt install git unzip build-essential cmake pkg-config libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libgtk-3-dev libatlas-base-dev gfortran libdc1394-22 libdc1394-22-dev libtbb-dev 
+    sudo apt install git unzip build-essential cmake pkg-config libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libgtk-3-dev libatlas-base-dev gfortran libdc1394-22 libdc1394-22-dev libtbb-dev
     #libxine-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libqt4-dev libfaac-dev libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev libvorbis-dev libxvidcore-dev x264
 
 Mac:
