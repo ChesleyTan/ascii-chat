@@ -1,52 +1,70 @@
 open Messaging
 open Package
-open View
+
+(* Identity of the current user *)
+let current_user = ref ""
 
 (* Text buffer is stored as a string *)
-let text_buffer = ref ""
+let input_buffer = ref ""
 
 (* Update text buffer when a keypress occurs *)
-let update_text_buffer c =
-    text_buffer := !text_buffer ^ (String.make 1 c)
+let update_input_buffer c =
+    input_buffer := !input_buffer ^ (String.make 1 c)
 
-(* Delete last character from text_buffer *)
-let delete_text_buffer () = 
-    let buffer_length = String.length !text_buffer in
+(* Delete last character from input_buffer *)
+let delete_input_buffer () =
+    let buffer_length = String.length !input_buffer in
     if buffer_length > 0 then
-        text_buffer := String.sub !text_buffer 0 (buffer_length - 1)
+        input_buffer := String.sub !input_buffer 0 (buffer_length - 1)
     else ()
 
-(* TODO: Determine size hashtable should be initialized at.
- * Maps user identities to the last package received for that user *)
+(* Maps user identities to the last package received for that user *)
 let package_mapping = Hashtbl.create 1
 
-(* Posts contents of text buffer to the history buffer in the 
- * messaging module for logging *)
+(* Updates user package with text message from the input box buffer, and posts
+ * contents of text buffer to the history buffer in the messaging module for
+ * logging *)
 let log_message () =
-    (* TODO update package in package mapping and post the updated package to
+    (* Update package in package mapping and post the updated package to
     the messaging module *)
-    (* TODO the state module should hold the identity of the current user *)
-    text_buffer := "";
-    failwith "unimplemented"
+    if Hashtbl.mem package_mapping !current_user then
+        let (image, _, _) =
+            Hashtbl.find package_mapping !current_user |> unpack in
+        let new_package = pack image !input_buffer (get_timestamp ()) in
+        Hashtbl.replace package_mapping !current_user new_package;
+        refresh_history_buffer !current_user new_package;
+        input_buffer := ""
+    else ()
+
+(* Updates user package the new image received *)
+let log_image new_image =
+    if Hashtbl.mem package_mapping !current_user then
+        let (_, text, _) =
+            Hashtbl.find package_mapping !current_user |> unpack in
+        let new_package = pack new_image text (get_timestamp ()) in
+        Hashtbl.replace package_mapping !current_user new_package;
+    else ()
 
 (* Refreshes package received *)
-let refresh_package user package = 
-    (* TODO Add package to mapping if package is associated with a new user, and
+let refresh_package user package =
+    (* Add package to mapping if package is associated with a new user, and
     check if the timestamp of the package is newer than the timestamp of the
     received package, and update the package in the mapping with the newer
     package *)
-    failwith "unimplemented"
-
-(* Determines which layout to use based on the number of connections, assigns 
- * a pane number to each user, and uses the messaging module to render the 
- * conversation history*)
-let render () =
-    (* TODO render images *)
-    if Hashtbl.length package_mapping = 1 then
-        outline One
-    else if Hashtbl.length package_mapping = 2 then
-        outline Two
-    else if Hashtbl.length package_mapping = 3 then
-        outline Three
+    let (_, _, new_timestamp) = unpack package in
+    if Hashtbl.mem package_mapping user then
+        let (_, _, timestamp) =
+            Hashtbl.find package_mapping user |> unpack in
+        if new_timestamp > timestamp then
+            Hashtbl.replace package_mapping user package
+        else ()
     else
-        outline Four
+        Hashtbl.add package_mapping user package
+
+let get_num_users () = Hashtbl.length package_mapping
+
+let get_input_buffer_contents () = !input_buffer
+
+let get_packages () =
+    Hashtbl.fold (fun k v acc -> v::acc) package_mapping []
+

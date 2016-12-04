@@ -28,6 +28,9 @@ let my_image = ref { data = (FastString.of_string "")
 
 let input_buffer = ref ""
 
+(* TODO integrate state module *)
+(* TODO add API functions for networking module to call *)
+
 let main () =
     Arg.parse specs ignore help_header;
     let term_attr = Unix.tcgetattr Unix.stdin in

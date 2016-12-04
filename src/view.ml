@@ -1,4 +1,8 @@
 open Lwt
+open Cv
+open Package
+open State
+open Messaging
 
 (* The number of panes in a window *)
 type window =  One | Two | Three | Four
@@ -226,3 +230,34 @@ let pane_start_coord pane window = match (pane, window) with
     | 5, Four -> (1, 111)
     | 6, Four -> (42, 111)
     | _ -> failwith "Invalid pane number for window layout!"
+
+let layout_for_num_users n =
+    match n with
+        | 1 -> One
+        | 2 -> Two
+        | 3 -> Three
+        | 4 -> Four
+        | _ -> failwith "More than 4 users is unsupported"
+
+(* Determines which layout to use based on the number of connections, assigns
+ * a pane number to each user, and uses the messaging module to render the
+ * conversation history *)
+let render text_only =
+    let num_users = get_num_users () in
+    let layout = layout_for_num_users num_users
+    and packages = get_packages ()
+    and chat_history = chat_history_to_string ()
+    and input_buffer = get_input_buffer_contents () in
+    let render_image idx package =
+        let (image, _, _) = unpack package in
+        image |>
+        Cv.colorize text_only |>
+        copy_to_grid (pane_start_coord idx layout) in
+    outline layout;
+    print_to_grid (pane_start_coord (num_users + 1) layout)
+        (text_dimensions layout) chat_history;
+    print_to_grid (pane_start_coord (num_users + 2) layout)
+        (input_dimensions layout) input_buffer;
+    List.iteri (fun idx package -> render_image (idx + 1) package) packages;
+    print_grid ()
+

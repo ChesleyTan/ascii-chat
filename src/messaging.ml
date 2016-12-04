@@ -19,7 +19,7 @@ let add_to_history_buffer user package  =
             ^ text
             ]
 
-(*Refreshes the history buffer*)
+(* Refreshes the history buffer *)
 let refresh_history_buffer user package =
     let (_, _, timestamp) = unpack package in
         if Hashtbl.mem message_mapping user
@@ -32,4 +32,4 @@ let refresh_history_buffer user package =
             end
 
 (*Calling to_string should return a string of the chat history*)
-let to_string () = String.concat "\n" !history_buffer
+let chat_history_to_string () = String.concat "\n" !history_buffer

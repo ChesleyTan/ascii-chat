@@ -28,3 +28,5 @@ val outline: window -> unit
 val print_grid: unit -> unit
 
 val pane_start_coord: int -> window -> (int * int)
+
+val render: bool -> unit
