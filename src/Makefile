@@ -27,7 +27,7 @@ bindings: sharedlib cv.cmi cv.cmx
 main: bindings $(OBJ)
 	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx $(OBJ) -cclib -lcv -o ascii-chat
 
-clean: 
-	rm -f *.cmi *.cmx *.o libcv.so
+clean:
+	rm -f ascii-chat *.cmi *.cmx *.o libcv.so
 
 .PHONY: default all clean sharedlib bindings main
