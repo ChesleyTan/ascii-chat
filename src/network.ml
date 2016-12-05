@@ -1,4 +1,5 @@
 open Package
+open Utils
 open Lwt
 
 let my_address = Utils.get_address_self()
@@ -42,22 +43,30 @@ and handle_gossip cb gossip =
   let conns = Str.split (Str.regexp ";") gossip in
     List.iter (update_connection cb) conns
 
-and handle_msg msg_len =
-  failwith "!@#!"
+and handle_msg cb id ic msg_len =
+  match safe_int_of_string msg_len with
+  | Some len ->
+      if len > 0 then
+        let ciphertext = really_input_string ic len in
+        print_endline @@ "Received: " ^ ciphertext;
+        let package = ciphertext |> decrypt |> deserialize in
+          cb id package
+      else print_endline @@ "Message length cannot be 0"
+  | None -> print_endline @@ "Message length not an integer: " ^ msg_len
 
-and handle_line cb line =
+and handle_line cb id ic line =
   if String.length line > 0 then
     let data = String.sub line 1 (String.length line - 1) in
     match String.get line 0 with
     | 'G' -> handle_gossip cb data
-    | 'M' -> handle_msg (int_of_string data)
-    | _ -> ()
-  else ()
+    | 'M' -> handle_msg cb id ic data
+    | c -> print_endline @@ "Received unknown header: " ^ (String.make 1 c)
+  else print_endline @@ "Received invalid line: " ^ line
 
-and handle_connection cb id ic oc () =
+and handle_connection cb id ic () =
   try
     let line = input_line ic in
-    handle_line cb line
+    handle_line cb id ic line
   with
   | End_of_file -> () (* TODO: close connection *)
 
@@ -71,7 +80,7 @@ and accept_connection cb new_client (fd, remote_addr) =
     broadcast_gossip ()
   ;
   Lwt_preemptive.detach (fun () ->
-      handle_connection cb id ic oc ()
+      handle_connection cb id ic ()
   ) () |> ignore
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
