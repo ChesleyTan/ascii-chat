@@ -108,7 +108,7 @@ and handle_identity oc line =
   if String.length line > 0 then
     let id = String.sub line 1 (String.length line - 1) in
     match String.get line 0 with
-    | 'I' -> Hashtbl.add connections id oc; id
+    | 'I' -> id
     | c -> ""
   else ""
 
@@ -117,15 +117,15 @@ and shutdown_connection fd ic oc =
   shutdown fd SHUTDOWN_ALL;
   close_in_noerr ic;
   close_out_noerr oc;
-  close fd
 
 and accept_connection cb new_client (fd, _) =
   let ic = Unix.in_channel_of_descr fd in
   let oc = Unix.out_channel_of_descr fd in
   output_string oc ("I" ^ !my_id ^ "\n"); flush oc;
   let id = input_line ic |> handle_identity oc in
-  if id = "" then shutdown_connection fd ic oc
-  else
+  if id = "" || Hashtbl.mem connections id
+  then shutdown_connection fd ic oc
+  else begin
     print_debug_endline @@ "New connection: " ^ id;
     Hashtbl.add connections id oc;
     if new_client then broadcast_gossip ();
@@ -133,6 +133,7 @@ and accept_connection cb new_client (fd, _) =
     Lwt_preemptive.detach (fun () ->
       handle_connection cb id ic ()
     ) () |> ignore
+  end
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
 let network_initialize port cb host_addr =
