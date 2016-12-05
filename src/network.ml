@@ -16,30 +16,30 @@ let send package =
 let handle_data cb data =
   failwith "unimplemented"
 
-let rec handle_connection cb ic oc () =
-  Lwt_io.read_line_opt ic >>=
-  (fun msg ->
-     match msg with
-     | Some data -> return (handle_data cb data) >>= handle_connection cb ic oc
-     | None -> return (print_endline "Connection closed")
-  )
+(* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
+let rec handle_connection fd =
+    let buf = Bytes.create 1 in
+    let rec inner () =
+    Unix.read fd buf 0 1 |>
+    (fun n -> print_endline buf |> inner)
+    in inner
 
-let accept_connection cb (fd, remote_addr) =
-  print_endline ("New connection from " ^ (string_of_sockaddr remote_addr));
-  let ic = Lwt_io.of_fd Lwt_io.Input fd in
-  let oc = Lwt_io.of_fd Lwt_io.Output fd in
-  Lwt.on_failure (handle_connection cb ic oc ())
-    (fun e -> print_endline (Printexc.to_string e));
-  return ()
+let accept_connection conn =
+    let open Unix in
+    let fd, _ = conn in
+    print_endline "new connection";
+    Lwt.on_failure (handle_connection fd ())
+        (fun e -> Lwt_log.ign_error (Printexc.to_string e))
+
+let create_socket port =
+    let open Unix in
+    let sock = socket PF_INET SOCK_STREAM 0 in
+    setsockopt sock SO_REUSEADDR true;
+    bind sock @@ ADDR_INET(my_inet_address, port);
+    listen sock 10;
+    sock
 
 let network_initialize port cb =
-  Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
-  let open Lwt_unix in
-  let sock = socket PF_INET SOCK_STREAM 0 in
-  setsockopt sock SO_REUSEADDR true;
-  bind sock @@ ADDR_INET (my_inet_address, port);
-  listen sock 10;
-  let rec server_loop () =
-    print_endline "Hello";
-    accept sock >>= accept_connection cb >>= server_loop in
-  server_loop() |> ignore
+  let sock = create_socket port in
+  let rec serve () = Unix.accept sock |> accept_connection |> serve in
+  serve()
