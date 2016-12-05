@@ -10,38 +10,77 @@ let string_of_sockaddr = function
   | Unix.ADDR_INET (addr, port) -> (Unix.string_of_inet_addr addr)
                                    ^ ":" ^ (string_of_int port)
 
+let connections = Hashtbl.create 4
+
 let send package =
   failwith "Unimplemented"
 
-let handle_data cb data =
-  failwith "unimplemented"
+let broadcast_gossip () =
+  let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "G" in
+  let send_gossip _ oc = output_string oc gossip in
+  Hashtbl.iter send_gossip connections;
+  print_endline @@ "Broadcasting gossip: " ^ gossip
+
+let rec update_connection cb c =
+  if Hashtbl.mem connections c then ()
+  else
+    match Str.split (Str.regexp ":") c with
+    | [addr; port] ->
+        begin
+          print_endline @@ "Connecting to " ^ addr ^":"^port;
+          let open Unix in
+          let sock = socket PF_INET SOCK_STREAM 0 in
+          setsockopt sock SO_REUSEADDR true;
+          let remote_addr = ADDR_INET (Unix.inet_addr_of_string addr,
+                                       int_of_string port) in
+          connect sock remote_addr;
+          accept_connection cb false (sock, remote_addr)
+        end
+    | _ -> ()
+
+and handle_gossip cb gossip =
+  let conns = Str.split (Str.regexp ";") gossip in
+    List.iter (update_connection cb) conns
+
+and handle_msg msg_len =
+  failwith "!@#!"
+
+and handle_line cb line =
+  if String.length line > 0 then
+    let data = String.sub line 1 (String.length line - 1) in
+    match String.get line 0 with
+    | 'G' -> handle_gossip cb data
+    | 'M' -> handle_msg (int_of_string data)
+    | _ -> ()
+  else ()
+
+and handle_connection cb id ic oc () =
+  try
+    let line = input_line ic in
+    handle_line cb line
+  with
+  | End_of_file -> () (* TODO: close connection *)
+
+and accept_connection cb new_client (fd, remote_addr) =
+  print_endline "new connection";
+  let id = string_of_sockaddr remote_addr in
+  let ic = Unix.in_channel_of_descr fd in
+  let oc = Unix.out_channel_of_descr fd in
+  Hashtbl.add connections id oc;
+  if new_client then
+    broadcast_gossip ()
+  ;
+  Lwt_preemptive.detach (fun () ->
+      handle_connection cb id ic oc ()
+  ) () |> ignore
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
-let rec handle_connection fd =
-    let buf = Bytes.create 1 in
-    let rec inner () =
-    Unix.read fd buf 0 1 |>
-    (fun n -> if n <> 0 then print_endline buf |> inner else return ())
-    in inner
-
-let accept_connection conn =
-    let open Unix in
-    let fd, _ = conn in
-    print_endline "new connection";
-    Lwt_preemptive.detach (fun () ->
-        handle_connection fd ()
-    ) ();
-    ()
-
-let create_socket port =
-    let open Unix in
-    let sock = socket PF_INET SOCK_STREAM 0 in
-    setsockopt sock SO_REUSEADDR true;
-    bind sock @@ ADDR_INET(my_inet_address, port);
-    listen sock 10;
-    sock
-
 let network_initialize port cb =
-  let sock = create_socket port in
-  let rec serve () = Unix.accept sock |> accept_connection |> serve in
+  Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
+  let open Unix in
+  let sock = socket PF_INET SOCK_STREAM 0 in
+  setsockopt sock SO_REUSEADDR true;
+  bind sock @@ ADDR_INET (my_inet_address, port);
+  listen sock 4;
+  let rec serve () = accept sock |> (accept_connection cb true) |> serve in
   serve()
