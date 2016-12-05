@@ -2,7 +2,7 @@ open Package
 open Utils
 open Lwt
 
-let print_debug_endline = if true then print_endline else ignore
+let print_debug_endline = if false then print_endline else ignore
 
 let my_address = Utils.get_address_self()
 let my_inet_address = Unix.inet_addr_of_string my_address
