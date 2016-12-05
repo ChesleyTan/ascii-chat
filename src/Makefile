@@ -1,7 +1,10 @@
 TARGET=main
-OBJ=package.cmx messaging.cmx state.cmx view.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit
+OBJ=package.cmx view.cmx messaging.cmx state.cmx main.cmx
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt,lwt.preemptive,lwt.unix,oUnit
 OPTS=-thread
+
+test:
+	ocamlbuild -pkgs $(OCAMLPKGS) test_main.byte && ./test_main.byte
 
 all: clean sharedlib bindings $(TARGET)
 
@@ -24,7 +27,7 @@ bindings: sharedlib cv.cmi cv.cmx
 main: bindings $(OBJ)
 	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx $(OBJ) -cclib -lcv -o ascii-chat
 
-clean:
+clean: 
 	rm -f *.cmi *.cmx *.o libcv.so
 
 .PHONY: default all clean sharedlib bindings main
