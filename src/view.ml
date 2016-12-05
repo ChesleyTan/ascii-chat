@@ -12,6 +12,8 @@ let max_rows = 45
 
 let grid = Array.make_matrix max_rows max_cols ""
 
+let ansi_reset = "\x1B[0m"
+
 (* Prints a given string in unbuffered mode *)
 let print_unbuf s =
     Printf.printf "%s%!" s
@@ -161,7 +163,13 @@ let copy_to_grid (start_row, start_col) (cols, rows) g =
         else
             for r = 0 to g_rows do
                 for c = 0 to g_cols do
-                    grid.(start_row + r).(start_col + c) <- g.(r).(c)
+                    begin
+                        grid.(start_row + r).(start_col + c) <- g.(r).(c);
+                        if c = g_cols then
+                            grid.(start_row + r).(start_col + c) <-
+                            grid.(start_row + r).(start_col + c) ^ ansi_reset
+                        else ();
+                    end
                 done
             done
 
