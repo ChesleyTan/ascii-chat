@@ -1,5 +1,6 @@
 open Package
 
+(* the address associated with the computer network interface *)
 val my_address : string
 
 (* sends the package to all the connected computers *)

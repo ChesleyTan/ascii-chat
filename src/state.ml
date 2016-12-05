@@ -1,6 +1,7 @@
 open Messaging
 open Package
 open Cv
+open Network
 
 (* Identity of the current user *)
 let current_user = ref ""
@@ -54,6 +55,7 @@ let log_image new_image =
             Hashtbl.find package_mapping !current_user |> unpack in
         let new_package = pack new_image text (get_timestamp ()) in
         Hashtbl.replace package_mapping !current_user new_package;
+        send new_package
     else ()
 
 (* Refreshes package received *)
