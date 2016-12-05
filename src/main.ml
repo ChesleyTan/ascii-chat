@@ -17,10 +17,12 @@ let time f =
 let port = ref 50000
 let text_only = ref false
 let cryptokey = ref ""
+let host_addr = ref ""
 
 let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
             ; ("-t", Arg.Set text_only, "Enable text-only mode")
             ; ("-p", Arg.Set_int port, "Port to run chat on")
+            ; ("-host", Arg.Set_string host_addr, "Host user to connect to")
             ]
 
 let help_header = "Available options: "
@@ -114,7 +116,7 @@ let main () =
     print_endline ("Running on " ^ curr_user);
     init_state curr_user;
     let _ = Lwt_preemptive.detach (fun () ->
-        network_initialize !port refresh_package
+        network_initialize !port refresh_package !host_addr
     ) () in
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->

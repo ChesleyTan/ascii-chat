@@ -88,7 +88,7 @@ and accept_connection cb new_client (fd, remote_addr) =
   ) () |> ignore
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
-let network_initialize port cb =
+let network_initialize port cb host_addr =
   Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
   let open Unix in
   let sock = socket PF_INET SOCK_STREAM 0 in

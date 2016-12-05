@@ -10,4 +10,5 @@ val send : package -> unit
  * on [port]. The callback function [f] is called on the received packet.
  * [f user package] should handle the [package] received from the [user]
  *)
-val network_initialize : int -> (string -> package -> unit) -> unit Lwt.t
+val network_initialize : int -> (string -> package -> unit) -> string
+                         -> unit Lwt.t
