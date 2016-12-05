@@ -145,11 +145,11 @@ let outline window =
             done
 
 let copy_to_grid (start_row, start_col) (rows, cols) g =
-    let g_rows = min ((Array.length g) - 1) max_rows in
+    let g_rows = min ((Array.length g) - 1) rows in
     if g_rows < 0 then
         ()
     else
-        let g_cols = min ((Array.length g.(0)) - 1) max_cols in
+        let g_cols = min ((Array.length g.(0)) - 1) cols in
         if start_row + g_rows >= max_rows || start_col + g_cols >= max_cols then
             failwith "copy_to_grid overflow!"
         else
