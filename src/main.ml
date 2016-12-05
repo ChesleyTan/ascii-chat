@@ -71,6 +71,9 @@ let set_non_canonical_term () =
                         } in
     Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new
 
+let char_blacklist = [0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15; 16;
+17; 18; 19; 20; 21; 22; 23; 24; 25; 26; 27; 28; 29; 30; 31; 127]
+
 (* Handles non-blocking keyboard input *)
 let handle_key_input () =
     let inchar =
@@ -95,7 +98,7 @@ let handle_key_input () =
         else ()
     else if char_code = 10 then
         log_message ()
-    else if char_code <> 0 && char_code <> 27 then
+    else if char_code < 128 && not @@ List.mem char_code char_blacklist then
         update_input_buffer inchar
     else ()
 
