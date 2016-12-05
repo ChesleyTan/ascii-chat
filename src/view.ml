@@ -194,6 +194,9 @@ let print_to_grid (start_row, start_col) (max_width, max_height) s =
             else ();
             if !c - start_col >= max_width || sub = "\n" then
                 begin
+                    for j = !c to start_col + max_width - 1 do
+                        grid.(!r).(j) <- " "
+                    done;
                     c := start_col;
                     incr r
                 end
