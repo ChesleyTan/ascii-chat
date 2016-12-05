@@ -46,7 +46,8 @@ let log_message () =
             pack image !input_buffer image_timestamp (get_timestamp ()) in
         Hashtbl.replace package_mapping !current_user new_package;
         refresh_history_buffer !current_user new_package;
-        input_buffer := ""
+        input_buffer := "";
+        send new_package
     else ()
 
 (* Updates user package the new image received *)
