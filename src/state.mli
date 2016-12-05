@@ -20,3 +20,5 @@ val get_input_buffer_length: unit -> int
 val get_packages: unit -> package list
 
 val init_state: string -> unit
+
+val delete_package_for_user: string -> unit
