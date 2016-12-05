@@ -1,6 +1,6 @@
 TARGET=main test
-OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,oUnit
+OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx test_messaging.cmx
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,ounit
 OPTS=-thread
 
 all: clean sharedlib bindings $(TARGET)
