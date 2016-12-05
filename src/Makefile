@@ -1,10 +1,9 @@
 TARGET=main
-OBJ=package.cmx messaging.cmx network.cmx state.cmx view.cmx test_messaging.cmx
+OBJ=package.cmx messaging.cmx network.cmx state.cmx view.cmx test_messaging.cmx 
 OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,oUnit
 OPTS=-thread
 
 all: clean sharedlib bindings $(TARGET)
-
 sharedlib: libasciichat_cv.so libasciichat_utils.so
 	@(which ldconfig > /dev/null && sudo ldconfig) || true
 
@@ -38,6 +37,6 @@ test: clean sharedlib bindings $(OBJ) test_main.cmx
 	./test_main -runner sequential
 
 clean:
-	rm -f ascii-chat test_main *.cmi *.cmx *.o
+	rm -f ascii-chat test_main *.cmi *.cmx *.o *.cache *.log
 
 .PHONY: default all clean sharedlib utils bindings main test no-bindings
