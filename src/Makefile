@@ -1,10 +1,7 @@
 TARGET=main
 OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,ounit
 OPTS=-thread
-
-test:
-	ocamlbuild -pkgs $(OCAMLPKGS) test_main.byte && ./test_main.byte
 
 all: clean sharedlib bindings $(TARGET)
 
@@ -39,4 +36,4 @@ main: bindings $(OBJ)
 clean:
 	rm -f ascii-chat *.cmi *.cmx *.o libasciichat_cv.so libasciichat_utils.so
 
-.PHONY: default all clean sharedlib cv utils bindings main
+.PHONY: default all clean sharedlib cv utils bindings main test
