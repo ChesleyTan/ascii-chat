@@ -40,4 +40,4 @@ let refresh_history_buffer user package =
 let chat_history_to_string () = String.concat "\n" !history_buffer
 
 (* Clears the history buffer - used for testing *)
-let clear_history_buffer = history_buffer := []; ()
+let clear_history_buffer ()= history_buffer := []; ()
