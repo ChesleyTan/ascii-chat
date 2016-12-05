@@ -19,15 +19,15 @@ OpenCV is required as a dependency in order to obtain images from the user's web
 
 ##Usage
 ###As Host
+To run ascii-chat as a participant for the chat, enter the command:
+
+`./ascii-chat <encryption_key>`
+
+where `encryption_key` is the same key as that used by all other participants.
+###As Participant
 To run ascii-chat as the host user for the chat, enter the command:
 
 `./ascii-chat <encryption_key> -host <host_ip:host_port>`
 
 where `encryption_key` is a pre-shared key between all participants, and `host_ip:host_port` is the network address of the host user.
 
-###As Participant
-To run ascii-chat as a participant for the chat, enter the command:
-
-`./ascii-chat <encryption_key>`
-
-where `encryption_key` is the same key as that used by all other participants.
