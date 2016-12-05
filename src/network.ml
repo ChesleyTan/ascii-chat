@@ -13,14 +13,23 @@ let string_of_sockaddr = function
 
 let connections = Hashtbl.create 4
 
+let broadcast data =
+  let send_data _ oc = output_string oc data; flush oc in
+  Hashtbl.iter send_data connections
+
 let send package =
-  failwith "Unimplemented"
+  let msg = package |> serialize |> encrypt in
+  print_endline @@ "Sending message: " ^ msg;
+  broadcast @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg
 
 let broadcast_gossip () =
-  let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "G" in
-  let send_gossip _ oc = output_string oc gossip in
-  Hashtbl.iter send_gossip connections;
-  print_endline @@ "Broadcasting gossip: " ^ gossip
+  let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
+  print_endline @@ "Broadcasting gossip: " ^ gossip;
+  broadcast @@ "G" ^ gossip
+
+let broadcast_drop id =
+  print_endline @@ "Broadcasting drop: " ^ id;
+  broadcast @@ "D" ^ id
 
 let rec update_connection cb c =
   if Hashtbl.mem connections c then ()
@@ -28,7 +37,7 @@ let rec update_connection cb c =
     match Str.split (Str.regexp ":") c with
     | [addr; port] ->
         begin
-          print_endline @@ "Connecting to " ^ addr ^":"^port;
+          print_endline @@ "Connecting to " ^ addr ^ ":" ^ port;
           let open Unix in
           let sock = socket PF_INET SOCK_STREAM 0 in
           setsockopt sock SO_REUSEADDR true;
@@ -46,20 +55,29 @@ and handle_gossip cb gossip =
 and handle_msg cb id ic msg_len =
   match safe_int_of_string msg_len with
   | Some len ->
-      if len > 0 then
-        let ciphertext = really_input_string ic len in
-        print_endline @@ "Received: " ^ ciphertext;
-        let package = ciphertext |> decrypt |> deserialize in
-          cb id package
-      else print_endline @@ "Message length cannot be 0"
+      begin
+        if len > 0 then
+          let ciphertext = really_input_string ic len in
+          print_endline @@ "Received: " ^ ciphertext;
+          (* TODO: handle gracefully *)
+          let package = ciphertext |> decrypt |> deserialize in
+            cb id package
+        else print_endline @@ "Message length cannot be 0"
+      end
   | None -> print_endline @@ "Message length not an integer: " ^ msg_len
 
+and handle_drop id =
+  Hashtbl.remove connections id
+    (* TODO: handle closing connections *)
+
 and handle_line cb id ic line =
+  let line = String.trim line in
   if String.length line > 0 then
     let data = String.sub line 1 (String.length line - 1) in
     match String.get line 0 with
     | 'G' -> handle_gossip cb data
     | 'M' -> handle_msg cb id ic data
+    | 'D' -> handle_drop data
     | c -> print_endline @@ "Received unknown header: " ^ (String.make 1 c)
   else print_endline @@ "Received invalid line: " ^ line
 
