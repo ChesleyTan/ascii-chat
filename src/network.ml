@@ -5,8 +5,8 @@ open Lwt
 let print_debug_endline = if true then print_endline else ignore
 
 let my_address = Utils.get_address_self()
-
 let my_inet_address = Unix.inet_addr_of_string my_address
+let my_id = ref ""
 
 let string_of_sockaddr = function
   | Unix.ADDR_UNIX s -> s
@@ -122,8 +122,7 @@ and shutdown_connection fd ic oc =
 and accept_connection cb new_client (fd, _) =
   let ic = Unix.in_channel_of_descr fd in
   let oc = Unix.out_channel_of_descr fd in
-  let my_id = my_address ^ ":" ^ (string_of_int port) in
-  output_string oc ("I" ^ my_id ^ "\n"); flush oc;
+  output_string oc ("I" ^ !my_id ^ "\n"); flush oc;
   let id = input_line ic |> handle_identity oc in
   if id = "" then shutdown_connection fd ic oc
   else
@@ -138,8 +137,8 @@ and accept_connection cb new_client (fd, _) =
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
 let network_initialize port cb host_addr =
   let dev_null = open_out "/dev/null" in
-  let my_id = my_address ^ ":" ^ (string_of_int port) in
-  Hashtbl.add connections my_id dev_null;
+  my_id := (my_address ^ ":" ^ (string_of_int port));
+  Hashtbl.add connections !my_id dev_null;
   if host_addr <> "" then open_connection cb host_addr;
   Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
   let open Unix in
