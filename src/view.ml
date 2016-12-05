@@ -144,7 +144,7 @@ let outline window =
                 done;
             done
 
-let copy_to_grid (start_row, start_col) (rows, cols) g =
+let copy_to_grid (start_row, start_col) (cols, rows) g =
     let g_rows = min ((Array.length g) - 1) rows in
     if g_rows < 0 then
         ()
