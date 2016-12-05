@@ -1,32 +1,52 @@
-[33mcommit 35e5aa3b3599581df0605bcaa01cd9e545adb2b0[m
+commit 446a78e859b0c49880096526687ba661451210c8
+Author: Danny Qiu <dqiu55@gmail.com>
+Date:   Mon Dec 5 07:27:43 2016 -0500
+
+    Comment networking code and adhere to 80 char line break
+
+ src/network.ml | 40 ++++++++++++++++++++++++++++++----------
+ src/utils.ml   |  1 -
+ src/utils.mli  |  5 +++++
+ 3 files changed, 35 insertions(+), 11 deletions(-)
+
+commit 50692caa35b3613c600c6860544e021c40bd156a
+Author: Lucas Chen <lmc336@cornell.edu>
+Date:   Mon Dec 5 07:24:46 2016 -0500
+
+    Added version control log
+
+ vclog.txt | 1380 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 1380 insertions(+)
+
+commit 35e5aa3b3599581df0605bcaa01cd9e545adb2b0
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 07:20:26 2016 -0500
 
     Removed starter interfaces
 
- interfaces/audio.mli            |  5 [31m-----[m
- interfaces/convert_to_ascii.mli |  9 [31m---------[m
- interfaces/convert_to_color.mli |  9 [31m---------[m
- interfaces/decryption.mli       | 11 [31m-----------[m
- interfaces/encryption.mli       | 11 [31m-----------[m
- interfaces/image.mli            | 12 [31m------------[m
- interfaces/image_convert.mli    |  9 [31m---------[m
- interfaces/network.mli          |  9 [31m---------[m
- interfaces/opencv.mli           |  7 [31m-------[m
- interfaces/package.mli          | 17 [31m-----------------[m
- interfaces/view.mli             |  9 [31m---------[m
+ interfaces/audio.mli            |  5 -----
+ interfaces/convert_to_ascii.mli |  9 ---------
+ interfaces/convert_to_color.mli |  9 ---------
+ interfaces/decryption.mli       | 11 -----------
+ interfaces/encryption.mli       | 11 -----------
+ interfaces/image.mli            | 12 ------------
+ interfaces/image_convert.mli    |  9 ---------
+ interfaces/network.mli          |  9 ---------
+ interfaces/opencv.mli           |  7 -------
+ interfaces/package.mli          | 17 -----------------
+ interfaces/view.mli             |  9 ---------
  11 files changed, 108 deletions(-)
 
-[33mcommit 3ec8c76cd1fc5f690b15039bf7c505f7d1862564[m
+commit 3ec8c76cd1fc5f690b15039bf7c505f7d1862564
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 07:15:57 2016 -0500
 
     Shut down new connections if connection limit of 4 is reached
 
- src/network.ml | 2 [32m+[m[31m-[m
+ src/network.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 5e3389c6caff6aa65d2e28c2aeb2700d8247bbec[m
+commit 5e3389c6caff6aa65d2e28c2aeb2700d8247bbec
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 07:07:25 2016 -0500
 
@@ -36,303 +56,303 @@ Date:   Mon Dec 5 07:07:25 2016 -0500
     connected user would connect to the new user at the same time. Now, only
     the connected user would connect to the new user.
 
- src/network.ml | 35 [32m++++++++++++++++[m[31m-------------------[m
+ src/network.ml | 35 ++++++++++++++++-------------------
  1 file changed, 16 insertions(+), 19 deletions(-)
 
-[33mcommit 41faa7558443d6071dda95a680980cb44a7f3294[m
+commit 41faa7558443d6071dda95a680980cb44a7f3294
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 06:50:07 2016 -0500
 
     Ensure ANSI reset is printed when image is clipped
 
- src/view.ml | 10 [32m+++++++++[m[31m-[m
+ src/view.ml | 10 +++++++++-
  1 file changed, 9 insertions(+), 1 deletion(-)
 
-[33mcommit 7f92695d669aeafc176ce06da62f87452d6357f3[m
+commit 7f92695d669aeafc176ce06da62f87452d6357f3
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 06:44:40 2016 -0500
 
     Changed user id for tests
 
- src/test_messaging.ml | 42 [32m+++++++++++++++++++++[m[31m---------------------[m
- src/test_state.ml     |  6 [32m+++[m[31m---[m
+ src/test_messaging.ml | 42 +++++++++++++++++++++---------------------
+ src/test_state.ml     |  6 +++---
  2 files changed, 24 insertions(+), 24 deletions(-)
 
-[33mcommit 9c43a5fb83c167d5e68cf9b4d3699c36a65cf4b8[m
+commit 9c43a5fb83c167d5e68cf9b4d3699c36a65cf4b8
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 06:37:20 2016 -0500
 
     Handle dropped connections on send
 
- src/network.ml  | 29 [32m++++++++++++++++++[m[31m-----------[m
- src/network.mli |  7 [32m+++++[m[31m--[m
- src/state.ml    | 10 [32m+++++[m[31m-----[m
+ src/network.ml  | 29 ++++++++++++++++++-----------
+ src/network.mli |  7 +++++--
+ src/state.ml    | 10 +++++-----
  3 files changed, 28 insertions(+), 18 deletions(-)
 
-[33mcommit 22e03b3999ba3db11d9896195466aacc33bec2fa[m
+commit 22e03b3999ba3db11d9896195466aacc33bec2fa
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 06:16:31 2016 -0500
 
     Remove unnecessary drop broadcast
 
- src/network.ml | 20 [32m+++++[m[31m---------------[m
+ src/network.ml | 20 +++++---------------
  1 file changed, 5 insertions(+), 15 deletions(-)
 
-[33mcommit 2c0d4349a560f7c954226f738e04e8f7f9c16221[m
+commit 2c0d4349a560f7c954226f738e04e8f7f9c16221
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 06:33:51 2016 -0500
 
     Update documentation
 
- src/cv.ml      |  1 [32m+[m
- src/main.ml    |  3 [32m+++[m
- src/package.ml |  9 [32m+++++++++[m
- src/state.ml   |  1 [32m+[m
- src/utils.ml   |  1 [32m+[m
- src/view.ml    | 17 [32m+++++++++++++++++[m
+ src/cv.ml      |  1 +
+ src/main.ml    |  3 +++
+ src/package.ml |  9 +++++++++
+ src/state.ml   |  1 +
+ src/utils.ml   |  1 +
+ src/view.ml    | 17 +++++++++++++++++
  6 files changed, 32 insertions(+)
 
-[33mcommit d0e35c14066f33847214e3d6dce58c3ee254fd58[m
+commit d0e35c14066f33847214e3d6dce58c3ee254fd58
 Merge: 434db54 08bbc14
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 06:20:07 2016 -0500
 
     Merge branch 'master' of https://github.com/ChesleyTan/ascii-chat
 
-[33mcommit 434db54ffb42f8eff08ae11de93438076fde767b[m
+commit 434db54ffb42f8eff08ae11de93438076fde767b
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 06:19:55 2016 -0500
 
     Add unit tests for state module
 
- src/Makefile       |  2 [32m+[m[31m-[m
- src/test_main.ml   |  2 [32m+[m[31m-[m
- src/test_state.ml  | 60 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
- src/test_state.mli |  3 [32m+++[m
+ src/Makefile       |  2 +-
+ src/test_main.ml   |  2 +-
+ src/test_state.ml  | 60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/test_state.mli |  3 +++
  4 files changed, 65 insertions(+), 2 deletions(-)
 
-[33mcommit 08bbc140285f464948e366c3639746569b57c64b[m
+commit 08bbc140285f464948e366c3639746569b57c64b
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 06:15:26 2016 -0500
 
     Increase number of default threads
 
- src/main.ml | 4 [32m++[m[31m--[m
+ src/main.ml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[33mcommit 566a83ec95cec52aafd7aaf041e76e873c133c1f[m
+commit 566a83ec95cec52aafd7aaf041e76e873c133c1f
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 06:10:57 2016 -0500
 
     Fix bounds for copy_to_grid
 
- src/view.ml | 4 [32m++[m[31m--[m
+ src/view.ml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[33mcommit 480ee720eee3b726f769d5f26a42fa75c6964b50[m
+commit 480ee720eee3b726f769d5f26a42fa75c6964b50
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 05:46:53 2016 -0500
 
     Set bounds on number of preemptive threads
 
- src/main.ml  |  2 [32m++[m
- src/state.ml |  2 [32m+[m[31m-[m
- src/view.ml  | 11 [32m+++++++[m[31m----[m
+ src/main.ml  |  2 ++
+ src/state.ml |  2 +-
+ src/view.ml  | 11 +++++++----
  3 files changed, 10 insertions(+), 5 deletions(-)
 
-[33mcommit f19669dd768dd919fdd9f0a026eda9d9e3ea1344[m
+commit f19669dd768dd919fdd9f0a026eda9d9e3ea1344
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 05:28:04 2016 -0500
 
     Fix messaging module syntax error
 
- src/messaging.ml | 2 [32m+[m[31m-[m
+ src/messaging.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit f8075e80e188fa1cc16b8c78b16b2be673a4b385[m
+commit f8075e80e188fa1cc16b8c78b16b2be673a4b385
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 05:23:27 2016 -0500
 
     Add helper functions for testing
 
- src/messaging.ml  | 3 [32m+++[m
- src/messaging.mli | 2 [32m++[m
- src/state.ml      | 3 [32m+++[m
- src/state.mli     | 2 [32m++[m
+ src/messaging.ml  | 3 +++
+ src/messaging.mli | 2 ++
+ src/state.ml      | 3 +++
+ src/state.mli     | 2 ++
  4 files changed, 10 insertions(+)
 
-[33mcommit 5c7dc2cf93ba1557ef5ee18cdd72ee8c27f07265[m
+commit 5c7dc2cf93ba1557ef5ee18cdd72ee8c27f07265
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 05:21:18 2016 -0500
 
     Propogate removal of user as a callback function
 
- src/main.ml     |  2 [32m+[m[31m-[m
- src/network.ml  | 10 [32m+++++[m[31m-----[m
- src/network.mli | 12 [32m+++++++[m[31m-----[m
- src/state.ml    |  2 [32m+[m[31m-[m
- src/state.mli   |  2 [32m+[m[31m-[m
+ src/main.ml     |  2 +-
+ src/network.ml  | 10 +++++-----
+ src/network.mli | 12 +++++++-----
+ src/state.ml    |  2 +-
+ src/state.mli   |  2 +-
  5 files changed, 15 insertions(+), 13 deletions(-)
 
-[33mcommit dcdfd73687273ef4adb2c0650adab90b90b00a2e[m
+commit dcdfd73687273ef4adb2c0650adab90b90b00a2e
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 05:20:05 2016 -0500
 
     Add submission generation script
 
- generate-submission.sh | 12 [32m++++++++++++[m
- lib/Makefile           |  9 [31m---------[m
- lib/foo.c              | 24 [31m------------------------[m
- lib/foo.h              |  8 [31m--------[m
- lib/foo.ml             |  4 [31m----[m
+ generate-submission.sh | 12 ++++++++++++
+ lib/Makefile           |  9 ---------
+ lib/foo.c              | 24 ------------------------
+ lib/foo.h              |  8 --------
+ lib/foo.ml             |  4 ----
  5 files changed, 12 insertions(+), 45 deletions(-)
 
-[33mcommit 887675d56931dab4989bee3429d23aa6e60b0a5b[m
+commit 887675d56931dab4989bee3429d23aa6e60b0a5b
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 05:13:14 2016 -0500
 
     Remove user state on dropped connection
 
- src/network.ml | 8 [32m++++++[m[31m--[m
+ src/network.ml | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-[33mcommit 90496b9e783d9d2bd1aed1023d3dc38ea2f01110[m
+commit 90496b9e783d9d2bd1aed1023d3dc38ea2f01110
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 05:11:01 2016 -0500
 
     Add function to delete package for a given user
 
- src/state.ml  | 3 [32m+++[m
- src/state.mli | 2 [32m++[m
+ src/state.ml  | 3 +++
+ src/state.mli | 2 ++
  2 files changed, 5 insertions(+)
 
-[33mcommit fdd67486fd343f9bad8f1795c1cb6963fdb57454[m
+commit fdd67486fd343f9bad8f1795c1cb6963fdb57454
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 05:02:33 2016 -0500
 
     Send updated messages
 
- src/state.ml | 3 [32m++[m[31m-[m
+ src/state.ml | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-[33mcommit ce33108e1512ce2b5d4a7c964ba860b73291f958[m
+commit ce33108e1512ce2b5d4a7c964ba860b73291f958
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 05:02:00 2016 -0500
 
     Properly close connection on drops
 
- src/network.ml | 52 [32m++++++++++++++++++++++++++++++[m[31m----------------------[m
+ src/network.ml | 52 ++++++++++++++++++++++++++++++----------------------
  1 file changed, 30 insertions(+), 22 deletions(-)
 
-[33mcommit 773a2d2b250863f6155d18fd8bbd64cb577d54fe[m
+commit 773a2d2b250863f6155d18fd8bbd64cb577d54fe
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 04:49:21 2016 -0500
 
     Clean oUnit testing cache/log files
 
- src/Makefile | 5 [32m++[m[31m---[m
+ src/Makefile | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-[33mcommit 2b754087f10ca82b174b570ebef1f63f5bef36f5[m
+commit 2b754087f10ca82b174b570ebef1f63f5bef36f5
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 04:40:29 2016 -0500
 
     Add separate text timestamp to package
 
- src/.merlin           |  3 [32m+[m[31m--[m
- src/messaging.ml      | 10 [32m+++++[m[31m-----[m
- src/package.ml        | 23 [32m+++++++++++++++[m[31m--------[m
- src/package.mli       |  4 [32m++[m[31m--[m
- src/state.ml          | 37 [32m+++++++++++++++++++++++++[m[31m------------[m
- src/test_messaging.ml | 20 [32m++++++++++[m[31m----------[m
- src/view.ml           |  2 [32m+[m[31m-[m
+ src/.merlin           |  3 +--
+ src/messaging.ml      | 10 +++++-----
+ src/package.ml        | 23 +++++++++++++++--------
+ src/package.mli       |  4 ++--
+ src/state.ml          | 37 +++++++++++++++++++++++++------------
+ src/test_messaging.ml | 20 ++++++++++----------
+ src/view.ml           |  2 +-
  7 files changed, 59 insertions(+), 40 deletions(-)
 
-[33mcommit e64095cf86b3812f2fb90a7e4d189e9a2923a412[m
+commit e64095cf86b3812f2fb90a7e4d189e9a2923a412
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 04:19:38 2016 -0500
 
     Turn off debugging prints in network
 
- src/network.ml | 2 [32m+[m[31m-[m
+ src/network.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit ae1d0b6db3212149017cd364e3bcd2c1b7fe70d9[m
+commit ae1d0b6db3212149017cd364e3bcd2c1b7fe70d9
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 04:18:14 2016 -0500
 
     Fix argument order in copy_to_grid
 
- src/view.ml | 2 [32m+[m[31m-[m
+ src/view.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 3d508fa2539d95cb0778b1d4c25a0b861da3c670[m
+commit 3d508fa2539d95cb0778b1d4c25a0b861da3c670
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 04:16:50 2016 -0500
 
     Fix typo in view.ml
 
- src/view.ml | 4 [32m++[m[31m--[m
+ src/view.ml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[33mcommit bcb08c153ef528c292127441003235fb8a08b061[m
+commit bcb08c153ef528c292127441003235fb8a08b061
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 04:13:04 2016 -0500
 
     Add network identity to handle send/receive port discrepany
 
- src/network.ml | 9 [32m+++++[m[31m----[m
+ src/network.ml | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
-[33mcommit 82398fff6d1bc56b563fb5546bb3864cf67f766a[m
+commit 82398fff6d1bc56b563fb5546bb3864cf67f766a
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 03:56:54 2016 -0500
 
     Clean test_main
 
- src/Makefile | 2 [32m+[m[31m-[m
+ src/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 771511a31ca7f31cfa649f5e112cb584ec148ec0[m
+commit 771511a31ca7f31cfa649f5e112cb584ec148ec0
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 03:55:21 2016 -0500
 
     Remove test from default Makefile target
 
- src/Makefile | 4 [32m++[m[31m--[m
+ src/Makefile | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[33mcommit 82d3349a9ba13f05b156a9605b3e3e93e07b45c0[m
+commit 82d3349a9ba13f05b156a9605b3e3e93e07b45c0
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 03:51:56 2016 -0500
 
     Fix port syntax error
 
- src/network.ml | 9 [32m++++[m[31m-----[m
+ src/network.ml | 9 ++++-----
  1 file changed, 4 insertions(+), 5 deletions(-)
 
-[33mcommit 18625c04085538a8f14481950e1a93355a4fc00f[m
+commit 18625c04085538a8f14481950e1a93355a4fc00f
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Dec 5 03:48:23 2016 -0500
 
     Add unit tests for messaging module
 
- src/Makefile           |  1 [32m+[m
- src/messaging.ml       | 11 [32m+++[m[31m---[m
- src/test_messaging.ml  | 96 [32m++++++++++++++++++++++++++++++++++++++++++++++++[m[31m--[m
- src/test_messaging.mli |  2 [32m++[m
+ src/Makefile           |  1 +
+ src/messaging.ml       | 11 +++---
+ src/test_messaging.ml  | 96 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/test_messaging.mli |  2 ++
  4 files changed, 102 insertions(+), 8 deletions(-)
 
-[33mcommit 6c1fe793664e3d68348827a4ed2ec152634e9675[m
+commit 6c1fe793664e3d68348827a4ed2ec152634e9675
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 03:47:09 2016 -0500
 
     Fix gossip issues with new connections
 
- src/network.ml | 110 [32m+++++++++++++++++++++++++++++++++++++[m[31m--------------------[m
+ src/network.ml | 110 +++++++++++++++++++++++++++++++++++++--------------------
  1 file changed, 72 insertions(+), 38 deletions(-)
 
-[33mcommit f5639b86276774250777c2ea13e8c00ab11d94bf[m
+commit f5639b86276774250777c2ea13e8c00ab11d94bf
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 03:08:48 2016 -0500
 
@@ -340,326 +360,326 @@ Date:   Mon Dec 5 03:08:48 2016 -0500
     
     Clear screen when layout changes
 
- src/view.ml  | 16 [32m++++++++++++[m[31m----[m
- src/view.mli |  2 [32m+[m[31m-[m
+ src/view.ml  | 16 ++++++++++++----
+ src/view.mli |  2 +-
  2 files changed, 13 insertions(+), 5 deletions(-)
 
-[33mcommit 3b611e5c362e83835cd2000211813a308c188a82[m
+commit 3b611e5c362e83835cd2000211813a308c188a82
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 02:44:53 2016 -0500
 
     Add network send to new images
 
- src/Makefile    | 2 [32m+[m[31m-[m
- src/network.mli | 1 [32m+[m
- src/state.ml    | 2 [32m++[m
+ src/Makefile    | 2 +-
+ src/network.mli | 1 +
+ src/state.ml    | 2 ++
  3 files changed, 4 insertions(+), 1 deletion(-)
 
-[33mcommit ed7d596416c9e960a351f3f338f6fb534022b01b[m
+commit ed7d596416c9e960a351f3f338f6fb534022b01b
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 02:38:59 2016 -0500
 
     Implement sending data and connection state updates for drops
 
- src/network.ml | 42 [32m++++++++++++++++++++++++++++++[m[31m------------[m
+ src/network.ml | 42 ++++++++++++++++++++++++++++++------------
  1 file changed, 30 insertions(+), 12 deletions(-)
 
-[33mcommit 10724e8e61176bef1c4e0b5ac03945f91a0a32ca[m
+commit 10724e8e61176bef1c4e0b5ac03945f91a0a32ca
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 02:10:34 2016 -0500
 
     Add host address command line option
 
- src/main.ml | 11 [32m++++++[m[31m-----[m
+ src/main.ml | 11 ++++++-----
  1 file changed, 6 insertions(+), 5 deletions(-)
 
-[33mcommit e818a90f221e7af60e60441a24fc763eee96c718[m
+commit e818a90f221e7af60e60441a24fc763eee96c718
 Author: Chesley Tan <ChesleyTan@users.noreply.github.com>
 Date:   Mon Dec 5 02:21:30 2016 -0500
 
     Update README.md
 
- README.md | 17 [32m++++++++++++++++[m[31m-[m
+ README.md | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
-[33mcommit bed9828408dd73e79d46638ada38efdc424a0940[m
+commit bed9828408dd73e79d46638ada38efdc424a0940
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 02:10:34 2016 -0500
 
     Add host address command line option
 
- src/main.ml     | 4 [32m+++[m[31m-[m
- src/network.ml  | 2 [32m+[m[31m-[m
- src/network.mli | 3 [32m++[m[31m-[m
+ src/main.ml     | 4 +++-
+ src/network.ml  | 2 +-
+ src/network.mli | 3 ++-
  3 files changed, 6 insertions(+), 3 deletions(-)
 
-[33mcommit 4ef624eb216ec69add268d433c88e7bdc38a178d[m
+commit 4ef624eb216ec69add268d433c88e7bdc38a178d
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 02:03:01 2016 -0500
 
     Put listening into loop and handle socket closing
 
- src/network.ml | 14 [32m+++++++++[m[31m-----[m
+ src/network.ml | 14 +++++++++-----
  1 file changed, 9 insertions(+), 5 deletions(-)
 
-[33mcommit d16fe5d4192bc19166b9f18f70df0a487f7e7f53[m
+commit d16fe5d4192bc19166b9f18f70df0a487f7e7f53
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 01:52:35 2016 -0500
 
     Implement message handling
 
- src/network.ml | 27 [32m++++++++++++++++++[m[31m---------[m
- src/utils.ml   |  6 [32m++++++[m
- src/utils.mli  |  1 [32m+[m
+ src/network.ml | 27 ++++++++++++++++++---------
+ src/utils.ml   |  6 ++++++
+ src/utils.mli  |  1 +
  3 files changed, 25 insertions(+), 9 deletions(-)
 
-[33mcommit f845044c0807eef371295bd29aeec27297997306[m
+commit f845044c0807eef371295bd29aeec27297997306
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 01:26:21 2016 -0500
 
     Implementing gossiping and connection state updates
 
- src/network.ml | 95 [32m+++++++++++++++++++++++++++++++++++++++++[m[31m-----------------[m
+ src/network.ml | 95 +++++++++++++++++++++++++++++++++++++++++-----------------
  1 file changed, 67 insertions(+), 28 deletions(-)
 
-[33mcommit 44f0b411e1ccfeef29517e67566a73bf3ac62376[m
+commit 44f0b411e1ccfeef29517e67566a73bf3ac62376
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 00:36:37 2016 -0500
 
     Create new thread to handle new connections
 
- src/network.ml | 6 [32m++++[m[31m--[m
+ src/network.ml | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-[33mcommit 1edd74430a1eab08e6a86c6c42f53ba7f7b84458[m
+commit 1edd74430a1eab08e6a86c6c42f53ba7f7b84458
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 00:30:32 2016 -0500
 
     Check for number of bytes read
 
- src/network.ml | 2 [32m+[m[31m-[m
+ src/network.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 6673b73877936af787ddb85172b3f28f7ad14797[m
+commit 6673b73877936af787ddb85172b3f28f7ad14797
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Dec 5 00:23:21 2016 -0500
 
     Fix threading for network server
 
- src/main.ml     |  4 [32m+++[m[31m-[m
- src/network.ml  | 50 [32m+++++++++++++++++++++++++[m[31m-------------------------[m
- src/network.mli |  2 [32m+[m[31m-[m
+ src/main.ml     |  4 +++-
+ src/network.ml  | 50 +++++++++++++++++++++++++-------------------------
+ src/network.mli |  2 +-
  3 files changed, 29 insertions(+), 27 deletions(-)
 
-[33mcommit d0e9c2153854156e32b9966c096de2d76722350d[m
+commit d0e9c2153854156e32b9966c096de2d76722350d
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 22:59:52 2016 -0500
 
     Add server loop to accept connections
 
- src/Makefile   |  2 [32m+[m[31m-[m
- src/main.ml    |  3 [32m++[m[31m-[m
- src/network.ml | 39 [32m+++++++++++++++++++++++++++++++++++[m[31m----[m
+ src/Makefile   |  2 +-
+ src/main.ml    |  3 ++-
+ src/network.ml | 39 +++++++++++++++++++++++++++++++++++----
  3 files changed, 38 insertions(+), 6 deletions(-)
 
-[33mcommit b8a76115151f2d8eb3a9ddb5bade1ac5dd5179cb[m
+commit b8a76115151f2d8eb3a9ddb5bade1ac5dd5179cb
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 22:59:20 2016 -0500
 
     Ignore test_main
 
- src/.gitignore | 1 [32m+[m
+ src/.gitignore | 1 +
  1 file changed, 1 insertion(+)
 
-[33mcommit ada7d1a673c4e22baa4dff268de0e5191a5024c2[m
+commit ada7d1a673c4e22baa4dff268de0e5191a5024c2
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 22:39:36 2016 -0500
 
     Update phony targets
 
- src/Makefile | 2 [32m+[m[31m-[m
+ src/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit d5677a0f0d079e08c0e4a9fb1cb7f8452eb6e666[m
+commit d5677a0f0d079e08c0e4a9fb1cb7f8452eb6e666
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 22:34:06 2016 -0500
 
     Only build shared libraries when source is updated
 
- src/Makefile | 11 [32m+++++[m[31m------[m
+ src/Makefile | 11 +++++------
  1 file changed, 5 insertions(+), 6 deletions(-)
 
-[33mcommit 87dba3896e58ec20b365167ffd8ee32f70563675[m
+commit 87dba3896e58ec20b365167ffd8ee32f70563675
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 22:26:06 2016 -0500
 
     Add rule to avoid building shared library
 
- src/Makefile | 9 [32m+++++[m[31m----[m
+ src/Makefile | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
-[33mcommit e54095c0a0c6b96bc6cf419967b0377e5c254d6c[m
+commit e54095c0a0c6b96bc6cf419967b0377e5c254d6c
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sun Dec 4 22:09:18 2016 -0500
 
     Add interfaces for test files
 
- src/Makefile           |  4 [32m++[m[31m--[m
- src/test_main.ml       |  4 [32m+[m[31m---[m
+ src/Makefile           |  4 ++--
+ src/test_main.ml       |  4 +---
  src/test_main.mli      |  0
- src/test_messaging.ml  | 10 [32m++++++++[m[31m--[m
- src/test_messaging.mli |  1 [32m+[m
+ src/test_messaging.ml  | 10 ++++++++--
+ src/test_messaging.mli |  1 +
  5 files changed, 12 insertions(+), 7 deletions(-)
 
-[33mcommit 18ffc8b4256ad90404f3de8fe3f84fd28a05aa07[m
+commit 18ffc8b4256ad90404f3de8fe3f84fd28a05aa07
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 22:13:17 2016 -0500
 
     Fix module issue
 
- src/network.ml | 3 [32m++[m[31m-[m
+ src/network.ml | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-[33mcommit 610a4ba35d3eb8a277c1ec0adc0a21528489b9a8[m
+commit 610a4ba35d3eb8a277c1ec0adc0a21528489b9a8
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 22:07:19 2016 -0500
 
     Revert ee0e1554e55a53bdbae43de84f86fd084c7fada2
 
- src/Makefile   |  2 [32m+[m[31m-[m
- src/network.ml |  8 [32m++[m[31m------[m
- src/utils.c    | 24 [32m++++++++++++++++++++++++[m
- src/utils.h    |  5 [32m+++++[m
- src/utils.ml   |  2 [32m++[m
- src/utils.mli  |  1 [32m+[m
+ src/Makefile   |  2 +-
+ src/network.ml |  8 ++------
+ src/utils.c    | 24 ++++++++++++++++++++++++
+ src/utils.h    |  5 +++++
+ src/utils.ml   |  2 ++
+ src/utils.mli  |  1 +
  6 files changed, 35 insertions(+), 7 deletions(-)
 
-[33mcommit c8ad22aaacba7220b480d12e0010520deac2e4a0[m
+commit c8ad22aaacba7220b480d12e0010520deac2e4a0
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sun Dec 4 21:56:32 2016 -0500
 
     Fix Makefile
 
- src/Makefile | 11 [32m+++++++[m[31m----[m
+ src/Makefile | 11 +++++++----
  1 file changed, 7 insertions(+), 4 deletions(-)
 
-[33mcommit 0b637bc982ce5e618f5cc0f98055fb68b776c21e[m
+commit 0b637bc982ce5e618f5cc0f98055fb68b776c21e
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sun Dec 4 21:35:36 2016 -0500
 
     Fix Makefile
 
- src/Makefile | 7 [32m++[m[31m-----[m
+ src/Makefile | 7 ++-----
  1 file changed, 2 insertions(+), 5 deletions(-)
 
-[33mcommit ee0e1554e55a53bdbae43de84f86fd084c7fada2[m
+commit ee0e1554e55a53bdbae43de84f86fd084c7fada2
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 20:35:46 2016 -0500
 
     Use OCaml only functions to get self address
 
- src/Makefile    |  4 [32m++[m[31m--[m
- src/main.ml     |  3 [32m++[m[31m-[m
- src/network.ml  | 17 [32m+++++++++++++++++[m
- src/network.mli | 13 [32m+++++++++++++[m
- src/utils.c     | 24 [31m------------------------[m
- src/utils.h     |  5 [31m-----[m
- src/utils.ml    |  2 [31m--[m
- src/utils.mli   |  1 [31m-[m
+ src/Makefile    |  4 ++--
+ src/main.ml     |  3 ++-
+ src/network.ml  | 17 +++++++++++++++++
+ src/network.mli | 13 +++++++++++++
+ src/utils.c     | 24 ------------------------
+ src/utils.h     |  5 -----
+ src/utils.ml    |  2 --
+ src/utils.mli   |  1 -
  8 files changed, 34 insertions(+), 35 deletions(-)
 
-[33mcommit 0f2a10d1bb6fc9859af1a1af8e09d4cfa8e63166[m
+commit 0f2a10d1bb6fc9859af1a1af8e09d4cfa8e63166
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 19:08:27 2016 -0500
 
     Implement getting network interface ip
 
- src/Makefile  | 29 [32m+++++++++++++++++++[m[31m----------[m
- src/main.ml   | 16 [32m+++++++++++++[m[31m---[m
- src/utils.c   | 26 [32m++++++++++++++++++++++++++[m
- src/utils.h   |  8 [32m++++++++[m
- src/utils.ml  |  4 [32m++++[m
- src/utils.mli |  1 [32m+[m
+ src/Makefile  | 29 +++++++++++++++++++----------
+ src/main.ml   | 16 +++++++++++++---
+ src/utils.c   | 26 ++++++++++++++++++++++++++
+ src/utils.h   |  8 ++++++++
+ src/utils.ml  |  4 ++++
+ src/utils.mli |  1 +
  6 files changed, 71 insertions(+), 13 deletions(-)
 
-[33mcommit a8e5f637112c20e82439c01fe48e624b3d4627b9[m
+commit a8e5f637112c20e82439c01fe48e624b3d4627b9
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 14:58:41 2016 -0500
 
     Remove exeutable in make clean target
 
- src/Makefile | 4 [32m++[m[31m--[m
+ src/Makefile | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[33mcommit e230bcf2ce096a8e5c85c16fb09b80b52df204bd[m
+commit e230bcf2ce096a8e5c85c16fb09b80b52df204bd
 Merge: 4aa3c9a 9ea2aeb
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sun Dec 4 20:16:21 2016 -0500
 
     Merge branch 'master' of https://github.com/ChesleyTan/ascii-chat
 
-[33mcommit 4aa3c9adf5e5738dd538bd51881549b2957b23e5[m
+commit 4aa3c9adf5e5738dd538bd51881549b2957b23e5
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sun Dec 4 20:10:06 2016 -0500
 
     Add test modules and updated makefile
 
- src/Makefile          | 9 [32m++++++[m[31m---[m
+ src/Makefile          | 9 ++++++---
  src/_tags             | 0
- src/test_main.ml      | 7 [32m+++++++[m
- src/test_messaging.ml | 5 [32m+++++[m
+ src/test_main.ml      | 7 +++++++
+ src/test_messaging.ml | 5 +++++
  4 files changed, 18 insertions(+), 3 deletions(-)
 
-[33mcommit 9ea2aeb770d658c6373356b4041ccdee73b13cdb[m
+commit 9ea2aeb770d658c6373356b4041ccdee73b13cdb
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sun Dec 4 20:10:06 2016 -0500
 
     Add test modules and updated makefile
 
  src/_tags             | 0
- src/test_main.ml      | 7 [32m+++++++[m
- src/test_messaging.ml | 5 [32m+++++[m
+ src/test_main.ml      | 7 +++++++
+ src/test_messaging.ml | 5 +++++
  3 files changed, 12 insertions(+)
 
-[33mcommit c2e05e14beccf69e00465c8ca132b16bc4643bfe[m
+commit c2e05e14beccf69e00465c8ca132b16bc4643bfe
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 16:21:31 2016 -0500
 
     Refactor main loop
 
- src/main.ml | 53 [32m++++++++++++++++++++++++++++[m[31m-------------------------[m
+ src/main.ml | 53 ++++++++++++++++++++++++++++-------------------------
  1 file changed, 28 insertions(+), 25 deletions(-)
 
-[33mcommit 4f12c4ce63a2a8993f84e1dc62ad74df016586c8[m
+commit 4f12c4ce63a2a8993f84e1dc62ad74df016586c8
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 16:21:19 2016 -0500
 
     Make install script platform-agnostic
 
- install.sh | 1 [31m-[m
+ install.sh | 1 -
  1 file changed, 1 deletion(-)
 
-[33mcommit 5c791d64bcfbe96e03ac3a05159cb69767990cbe[m
+commit 5c791d64bcfbe96e03ac3a05159cb69767990cbe
 Author: Chesley Tan <ChesleyTan@users.noreply.github.com>
 Date:   Sun Dec 4 16:23:40 2016 -0500
 
     Update README.md
 
- README.md | 16 [32m++++++++++++++++[m
+ README.md | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-[33mcommit dd238af6936ed457835aa8740d5e380978986f83[m
+commit dd238af6936ed457835aa8740d5e380978986f83
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 16:00:57 2016 -0500
 
     Add SHA256 for encryption key generation; Read key from command line
 
- src/main.ml     | 13 [32m+++++++++++[m[31m--[m
- src/package.ml  |  9 [32m++++++++[m[31m-[m
- src/package.mli |  4 [32m++++[m
+ src/main.ml     | 13 +++++++++++--
+ src/package.ml  |  9 ++++++++-
+ src/package.mli |  4 ++++
  3 files changed, 23 insertions(+), 3 deletions(-)
 
-[33mcommit 394185116d1ff64fa45833dd149ffec2a48716cf[m
+commit 394185116d1ff64fa45833dd149ffec2a48716cf
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Dec 4 15:38:48 2016 -0500
 
@@ -667,25 +687,25 @@ Date:   Sun Dec 4 15:38:48 2016 -0500
     
     Remove dependence on lz4
 
- install.sh      |  2 [32m+[m[31m-[m
- src/Makefile    |  2 [32m+[m[31m-[m
- src/main.ml     |  5 [31m-----[m
- src/package.ml  | 33 [32m++++++++++++++++++++++++[m[31m---------[m
- src/package.mli |  8 [32m++++++[m[31m--[m
- src/state.ml    |  1 [31m-[m
+ install.sh      |  2 +-
+ src/Makefile    |  2 +-
+ src/main.ml     |  5 -----
+ src/package.ml  | 33 ++++++++++++++++++++++++---------
+ src/package.mli |  8 ++++++--
+ src/state.ml    |  1 -
  6 files changed, 32 insertions(+), 19 deletions(-)
 
-[33mcommit cccd9342ec237c32523e828bf8a474d2f8720a69[m
+commit cccd9342ec237c32523e828bf8a474d2f8720a69
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 14:54:25 2016 -0500
 
     Add script to install opencv3 using homebrew
 
- install-opencv-osx.sh  | 4 [32m++++[m
- install-opencv-unix.sh | 2 [32m+[m[31m-[m
+ install-opencv-osx.sh  | 4 ++++
+ install-opencv-unix.sh | 2 +-
  2 files changed, 5 insertions(+), 1 deletion(-)
 
-[33mcommit 5322ca17e93701c5ee253548e752640567e49aa2[m
+commit 5322ca17e93701c5ee253548e752640567e49aa2
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Dec 4 14:51:09 2016 -0500
 
@@ -694,243 +714,243 @@ Date:   Sun Dec 4 14:51:09 2016 -0500
  MS0Charter.pdf | Bin
  1 file changed, 0 insertions(+), 0 deletions(-)
 
-[33mcommit d0566b509f70eb0d745980c59fa4fb62f00b06ff[m
+commit d0566b509f70eb0d745980c59fa4fb62f00b06ff
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Dec 3 23:48:34 2016 -0500
 
     Remove dependence on lambda-term
 
- install.sh   |  2 [32m+[m[31m-[m
- src/Makefile |  2 [32m+[m[31m-[m
- src/main.ml  | 65 [32m++++++++++++++++++++++++++++++++++++++[m[31m----------------------[m
- src/view.mli |  1 [31m-[m
+ install.sh   |  2 +-
+ src/Makefile |  2 +-
+ src/main.ml  | 65 ++++++++++++++++++++++++++++++++++++++----------------------
+ src/view.mli |  1 -
  4 files changed, 43 insertions(+), 27 deletions(-)
 
-[33mcommit a1ebbdc84192ec12045ac16e0c4cb9f5a21d4a80[m
+commit a1ebbdc84192ec12045ac16e0c4cb9f5a21d4a80
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Dec 3 23:21:08 2016 -0500
 
     Handle posting message from the input box
 
- src/main.ml      |  5 [32m+++[m[31m--[m
- src/messaging.ml | 10 [32m+++++++[m[31m---[m
+ src/main.ml      |  5 +++--
+ src/messaging.ml | 10 +++++++---
  2 files changed, 10 insertions(+), 5 deletions(-)
 
-[33mcommit 021be4d0fd1f7d58a5f1758ec5ba9e9d4a681179[m
+commit 021be4d0fd1f7d58a5f1758ec5ba9e9d4a681179
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Dec 3 22:50:12 2016 -0500
 
     Integrate state module with main.ml
 
- src/main.ml   | 40 [32m++++++++++++[m[31m----------------------------[m
- src/state.ml  | 13 [32m+++++++++++++[m
- src/state.mli |  4 [32m++++[m
- src/view.mli  |  2 [32m++[m
+ src/main.ml   | 40 ++++++++++++----------------------------
+ src/state.ml  | 13 +++++++++++++
+ src/state.mli |  4 ++++
+ src/view.mli  |  2 ++
  4 files changed, 31 insertions(+), 28 deletions(-)
 
-[33mcommit 8c2b628b78b4ecaf447a8270338899ff17b4431f[m
+commit 8c2b628b78b4ecaf447a8270338899ff17b4431f
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Dec 3 22:02:14 2016 -0500
 
     Finish state module implementation; Add render function to view
 
- src/Makefile      |  2 [32m+[m[31m-[m
- src/main.ml       |  3 [32m++[m
- src/messaging.ml  |  4 [32m+[m[31m--[m
- src/messaging.mli |  2 [32m+[m[31m-[m
- src/state.ml      | 82 [32m+++++++++++++++++++++++++++++++++[m[31m----------------------[m
- src/state.mli     | 13 [32m+++++++[m[31m--[m
- src/view.ml       | 35 [32m++++++++++++++++++++++++[m
- src/view.mli      |  2 [32m++[m
+ src/Makefile      |  2 +-
+ src/main.ml       |  3 ++
+ src/messaging.ml  |  4 +--
+ src/messaging.mli |  2 +-
+ src/state.ml      | 82 +++++++++++++++++++++++++++++++++----------------------
+ src/state.mli     | 13 +++++++--
+ src/view.ml       | 35 ++++++++++++++++++++++++
+ src/view.mli      |  2 ++
  8 files changed, 104 insertions(+), 39 deletions(-)
 
-[33mcommit b2ab0883c12c7042acd9bcfe1f37410a500180c2[m
+commit b2ab0883c12c7042acd9bcfe1f37410a500180c2
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Dec 3 18:06:52 2016 -0500
 
     Add state module
 
- src/Makefile  |  2 [32m+[m[31m-[m
- src/state.ml  | 52 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++[m
- src/state.mli | 11 [32m+++++++++++[m
+ src/Makefile  |  2 +-
+ src/state.ml  | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/state.mli | 11 +++++++++++
  3 files changed, 64 insertions(+), 1 deletion(-)
 
-[33mcommit 5a10378aea3eaeecac6abc539283f2336bef2951[m
+commit 5a10378aea3eaeecac6abc539283f2336bef2951
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Sat Dec 3 17:54:04 2016 -0500
 
     Fix messaging module
 
- src/messaging.ml  | 39 [32m++++++++++++++++++++++++++[m[31m-------------[m
- src/messaging.mli | 11 [32m+++++[m[31m------[m
+ src/messaging.ml  | 39 ++++++++++++++++++++++++++-------------
+ src/messaging.mli | 11 +++++------
  2 files changed, 31 insertions(+), 19 deletions(-)
 
-[33mcommit c98968c4dfeab830ae407e45f30577b398013ede[m
+commit c98968c4dfeab830ae407e45f30577b398013ede
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Fri Dec 2 23:28:06 2016 -0500
 
     Update hashtable mapping for messaging history
 
- src/messaging.ml  | 15 [32m++++++++[m[31m-------[m
- src/messaging.mli |  4 [32m++[m[31m--[m
+ src/messaging.ml  | 15 ++++++++-------
+ src/messaging.mli |  4 ++--
  2 files changed, 10 insertions(+), 9 deletions(-)
 
-[33mcommit c4bf022ecb28df73a43790b780239c61873ee984[m
+commit c4bf022ecb28df73a43790b780239c61873ee984
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Fri Dec 2 01:31:14 2016 -0500
 
     Fix hashtable updating for messaging backend
 
- src/messaging.ml | 2 [32m+[m[31m-[m
+ src/messaging.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 4ef259f0f441f4ea243144bdb4f54f0906e91716[m
+commit 4ef259f0f441f4ea243144bdb4f54f0906e91716
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Thu Dec 1 17:34:42 2016 -0500
 
     Implemented hashtable for storing last user message info in history
 
- src/Makefile      |  2 [32m+[m[31m-[m
- src/messaging.ml  | 16 [32m+++++++++++++[m[31m---[m
- src/messaging.mli | 10 [32m+++++++[m[31m---[m
+ src/Makefile      |  2 +-
+ src/messaging.ml  | 16 +++++++++++++---
+ src/messaging.mli | 10 +++++++---
  3 files changed, 21 insertions(+), 7 deletions(-)
 
-[33mcommit c7909ecc7837d88c3cf1b45780f6e88e7cead534[m
+commit c7909ecc7837d88c3cf1b45780f6e88e7cead534
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Wed Nov 30 23:48:56 2016 -0500
 
     Add module for messaging backend
 
- src/messaging.ml  | 11 [32m+++++++++++[m
- src/messaging.mli |  5 [32m+++++[m
+ src/messaging.ml  | 11 +++++++++++
+ src/messaging.mli |  5 +++++
  2 files changed, 16 insertions(+)
 
-[33mcommit 68441975dc5e2690e2a5a529c6a741ffca686ddc[m
+commit 68441975dc5e2690e2a5a529c6a741ffca686ddc
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Wed Nov 30 21:45:53 2016 -0500
 
     Fix wrapping for 4-layout
 
- src/view.ml | 4 [32m++[m[31m--[m
+ src/view.ml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[33mcommit 670d7d588db12fcf603cc3ae2ca485ecff78c540[m
+commit 670d7d588db12fcf603cc3ae2ca485ecff78c540
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Wed Nov 30 21:45:22 2016 -0500
 
     Fix ANSI color sequence for text-only
 
- src/cv.ml | 2 [32m+[m[31m-[m
+ src/cv.ml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 295b08b9af8e4e43b4c1c1287d70179b53838a7c[m
+commit 295b08b9af8e4e43b4c1c1287d70179b53838a7c
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 29 21:14:54 2016 -0500
 
     Add newline handling to print_to_grid()
 
- src/main.ml |  1 [32m+[m
- src/view.ml | 14 [32m+++++++++[m[31m-----[m
+ src/main.ml |  1 +
+ src/view.ml | 14 +++++++++-----
  2 files changed, 10 insertions(+), 5 deletions(-)
 
-[33mcommit 54cfdb50e1a9d3bdc456848a80e792baf8aebc63[m
+commit 54cfdb50e1a9d3bdc456848a80e792baf8aebc63
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 29 00:09:24 2016 -0500
 
     Add separate input text box to UI
 
- src/main.ml  |  2 [32m+[m[31m-[m
- src/view.ml  | 44 [32m+++++++++++++++++++++++++++++++++++[m[31m---------[m
- src/view.mli |  2 [32m++[m
+ src/main.ml  |  2 +-
+ src/view.ml  | 44 +++++++++++++++++++++++++++++++++++---------
+ src/view.mli |  2 ++
  3 files changed, 38 insertions(+), 10 deletions(-)
 
-[33mcommit 661b774c60ffa2bb6b055db09820b57a9e809ec7[m
+commit 661b774c60ffa2bb6b055db09820b57a9e809ec7
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 23:35:34 2016 -0500
 
     Implement printing strings to custom UI layout
 
- src/main.ml  |  6 [32m++++[m[31m--[m
- src/view.ml  | 32 [32m++++++++++++++++++++++++++++++++[m
- src/view.mli |  4 [32m++++[m
+ src/main.ml  |  6 ++++--
+ src/view.ml  | 32 ++++++++++++++++++++++++++++++++
+ src/view.mli |  4 ++++
  3 files changed, 40 insertions(+), 2 deletions(-)
 
-[33mcommit 2e30fa92ae13cd37823081e118ae7822b2b127e9[m
+commit 2e30fa92ae13cd37823081e118ae7822b2b127e9
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 23:13:03 2016 -0500
 
     Add non-blocking input reading
 
- src/main.ml | 32 [32m++++++++++++++++++++++++++++++++[m
+ src/main.ml | 32 ++++++++++++++++++++++++++++++++
  1 file changed, 32 insertions(+)
 
-[33mcommit 3e5dd1e7aea692ace196985e3c7c393397525093[m
+commit 3e5dd1e7aea692ace196985e3c7c393397525093
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 22:21:02 2016 -0500
 
     Add custom UI layout for 4 users
 
- src/main.ml |  4 [32m+++[m[31m-[m
- src/view.ml | 38 [32m+++++++++++++++++++++++++++++++++++[m[31m---[m
+ src/main.ml |  4 +++-
+ src/view.ml | 38 +++++++++++++++++++++++++++++++++++---
  2 files changed, 38 insertions(+), 4 deletions(-)
 
-[33mcommit 41c77ad08057da47c433c25645b373b85c0ee746[m
+commit 41c77ad08057da47c433c25645b373b85c0ee746
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 22:02:48 2016 -0500
 
     Add custom UI layout for 3 users
 
- src/main.ml |  4 [32m+++[m[31m-[m
- src/view.ml | 32 [32m++++++++++++++++++++++++++++++++[m
+ src/main.ml |  4 +++-
+ src/view.ml | 32 ++++++++++++++++++++++++++++++++
  2 files changed, 35 insertions(+), 1 deletion(-)
 
-[33mcommit 9832cb3f603ddd3b36c1c43b8497cacaec42d78f[m
+commit 9832cb3f603ddd3b36c1c43b8497cacaec42d78f
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 21:50:44 2016 -0500
 
     Add custom layout for 2 users
 
- src/main.ml |  9 [32m++++++[m[31m---[m
- src/view.ml | 40 [32m++++++++++++++++++++++++++++++++++++[m[31m----[m
+ src/main.ml |  9 ++++++---
+ src/view.ml | 40 ++++++++++++++++++++++++++++++++++++----
  2 files changed, 42 insertions(+), 7 deletions(-)
 
-[33mcommit 5c1e12add502977a0d6dfb917e6ee7809485e10b[m
+commit 5c1e12add502977a0d6dfb917e6ee7809485e10b
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 21:34:33 2016 -0500
 
     Implement custom UI layout for single user
 
- src/cv.ml    | 47 [32m+++++++++++++++[m[31m---------------[m
- src/cv.mli   |  2 [32m+[m[31m-[m
- src/main.ml  | 37 [32m++++++++++++[m[31m------------[m
- src/view.ml  | 93 [32m++++++++++++++++++++++++++++++++++++++++++[m[31m------------------[m
- src/view.mli | 21 [32m++++++++++++[m[31m--[m
+ src/cv.ml    | 47 +++++++++++++++---------------
+ src/cv.mli   |  2 +-
+ src/main.ml  | 37 ++++++++++++------------
+ src/view.ml  | 93 ++++++++++++++++++++++++++++++++++++++++++------------------
+ src/view.mli | 21 ++++++++++++--
  5 files changed, 128 insertions(+), 72 deletions(-)
 
-[33mcommit fc711329c01b2f7fa0d7e11cbf0dee22481ff675[m
+commit fc711329c01b2f7fa0d7e11cbf0dee22481ff675
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Mon Nov 28 16:03:18 2016 -0500
 
     Add view module
 
- src/Makefile |  2 [32m+[m[31m-[m
- src/view.ml  | 33 [32m+++++++++++++++++++++++++++++++++[m
- src/view.mli |  7 [32m+++++++[m
+ src/Makefile |  2 +-
+ src/view.ml  | 33 +++++++++++++++++++++++++++++++++
+ src/view.mli |  7 +++++++
  3 files changed, 41 insertions(+), 1 deletion(-)
 
-[33mcommit 72dfa8dc428242d398736f2d2d6a8d8b851e19f7[m
+commit 72dfa8dc428242d398736f2d2d6a8d8b851e19f7
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 15:07:54 2016 -0500
 
     Move image processing to background preemptive thread
 
- src/Makefile |  9 [32m+++++[m[31m----[m
- src/cv.ml    |  9 [32m+++++[m[31m----[m
- src/cv.mli   |  2 [32m+[m[31m-[m
- src/main.ml  | 19 [32m++++++++++++++++[m[31m---[m
+ src/Makefile |  9 +++++----
+ src/cv.ml    |  9 +++++----
+ src/cv.mli   |  2 +-
+ src/main.ml  | 19 ++++++++++++++++---
  4 files changed, 27 insertions(+), 12 deletions(-)
 
-[33mcommit 753731fc957d8c85f28a996f0313f94e6ab99338[m
+commit 753731fc957d8c85f28a996f0313f94e6ab99338
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 11:57:03 2016 -0500
 
@@ -938,272 +958,273 @@ Date:   Mon Nov 28 11:57:03 2016 -0500
     
     Add lambda-term and lwt dependencies
 
- install.sh   |  2 [32m+[m[31m-[m
- src/.merlin  |  2 [32m++[m
- src/Makefile |  2 [32m+[m[31m-[m
- src/main.ml  | 22 [32m+++++++++++++++++++[m[31m---[m
+ install.sh   |  2 +-
+ src/.merlin  |  2 ++
+ src/Makefile |  2 +-
+ src/main.ml  | 22 +++++++++++++++++++---
  4 files changed, 23 insertions(+), 5 deletions(-)
 
-[33mcommit 3ccf88978dfb527848c374157a437b30eb4a5a06[m
+commit 3ccf88978dfb527848c374157a437b30eb4a5a06
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 02:05:11 2016 -0500
 
     Add UI layout design diagrams
 
- images/ASCII Chat Mockup 1 User Alt.png  | Bin [31m0[m -> [32m14407[m bytes
- images/ASCII Chat Mockup 1 User.png      | Bin [31m0[m -> [32m14509[m bytes
- images/ASCII Chat Mockup 2 Users.png     | Bin [31m0[m -> [32m13763[m bytes
- images/ASCII Chat Mockup 3 Users Alt.png | Bin [31m0[m -> [32m15719[m bytes
- images/ASCII Chat Mockup 3 Users.png     | Bin [31m0[m -> [32m17149[m bytes
- images/ASCII Chat Mockup 4 Users Alt.png | Bin [31m0[m -> [32m17759[m bytes
- images/ASCII Chat Mockup 4 Users.png     | Bin [31m0[m -> [32m17781[m bytes
+ images/ASCII Chat Mockup 1 User Alt.png  | Bin 0 -> 14407 bytes
+ images/ASCII Chat Mockup 1 User.png      | Bin 0 -> 14509 bytes
+ images/ASCII Chat Mockup 2 Users.png     | Bin 0 -> 13763 bytes
+ images/ASCII Chat Mockup 3 Users Alt.png | Bin 0 -> 15719 bytes
+ images/ASCII Chat Mockup 3 Users.png     | Bin 0 -> 17149 bytes
+ images/ASCII Chat Mockup 4 Users Alt.png | Bin 0 -> 17759 bytes
+ images/ASCII Chat Mockup 4 Users.png     | Bin 0 -> 17781 bytes
  7 files changed, 0 insertions(+), 0 deletions(-)
 
-[33mcommit 6610fc14059706ebea171044abfc27b12f85ea60[m
+commit 6610fc14059706ebea171044abfc27b12f85ea60
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 28 00:11:16 2016 -0500
 
     Add desired image dimensions to get_frame parameters
 
- src/cv.ml   | 6 [32m+++[m[31m---[m
- src/cv.mli  | 2 [32m+[m[31m-[m
- src/main.ml | 2 [32m+[m[31m-[m
+ src/cv.ml   | 6 +++---
+ src/cv.mli  | 2 +-
+ src/main.ml | 2 +-
  3 files changed, 5 insertions(+), 5 deletions(-)
 
-[33mcommit f0a9c278a0dd40d932e610e713fbf49d05c849bd[m
+commit f0a9c278a0dd40d932e610e713fbf49d05c849bd
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Nov 27 23:48:03 2016 -0500
 
     Add command line flag for text only mode
 
- src/main.ml | 14 [32m+++++++++++[m[31m---[m
+ src/main.ml | 14 +++++++++++---
  1 file changed, 11 insertions(+), 3 deletions(-)
 
-[33mcommit 9703f7c84b5921cde1b24589ccad6f2b4deccffa[m
+commit 9703f7c84b5921cde1b24589ccad6f2b4deccffa
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Nov 27 23:12:13 2016 -0500
 
     Update Makefile
 
- src/Makefile | 4 [32m+++[m[31m-[m
+ src/Makefile | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-[33mcommit 37e8b1ff4a50940da3b29d05696b82a49eec2a4a[m
+commit 37e8b1ff4a50940da3b29d05696b82a49eec2a4a
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Nov 27 23:08:42 2016 -0500
 
     Ignore ascii-chat binary
 
- src/.gitignore | 1 [32m+[m
+ src/.gitignore | 1 +
  1 file changed, 1 insertion(+)
 
-[33mcommit 14ac3dc58d98e9c688ad7e9ae3ff7876d365376e[m
+commit 14ac3dc58d98e9c688ad7e9ae3ff7876d365376e
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Nov 27 23:07:04 2016 -0500
 
     Add text_only boolean switch
 
- src/main.ml | 4 [32m+++[m[31m-[m
+ src/main.ml | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-[33mcommit 472e1f4aa702927c3eec536e7fe6b6b6875b65b7[m
+commit 472e1f4aa702927c3eec536e7fe6b6b6875b65b7
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Nov 27 23:00:21 2016 -0500
 
     Remove ldconfig for mac
 
- src/Makefile | 2 [32m+[m[31m-[m
+ src/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[33mcommit 9d75a96d370ed908612d4af8b929b1ddabd466e6[m
+commit 9d75a96d370ed908612d4af8b929b1ddabd466e6
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Nov 27 22:49:51 2016 -0500
 
     Add timestamp to package
 
- src/Makefile    |  2 [32m+[m[31m-[m
- src/main.ml     |  5 [32m+++[m[31m--[m
- src/package.ml  | 19 [32m++++++++++++++[m[31m-----[m
- src/package.mli |  6 [32m++++[m[31m--[m
+ src/Makefile    |  2 +-
+ src/main.ml     |  5 +++--
+ src/package.ml  | 19 ++++++++++++++-----
+ src/package.mli |  6 ++++--
  4 files changed, 22 insertions(+), 10 deletions(-)
 
-[33mcommit a1faf2767462a3d8888fea3225d6820280bc09ef[m
+commit a1faf2767462a3d8888fea3225d6820280bc09ef
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sun Nov 27 22:49:40 2016 -0500
 
     Fix compilation issues on mac
 
- .gitignore           |  5 [32m+++++[m
- src/Makefile         | 10 [32m+++++[m[31m-----[m
- src/{cv.c => cv.cpp} |  0
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ .gitignore   |  5 ++++
+ src/Makefile | 10 +++----
+ src/cv.c     | 89 ------------------------------------------------------------
+ src/cv.cpp   | 89 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 99 insertions(+), 94 deletions(-)
 
-[33mcommit 309ad4679971d07f9f55fed758745be9d9232b45[m
+commit 309ad4679971d07f9f55fed758745be9d9232b45
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Nov 27 22:39:26 2016 -0500
 
     Add text field to package
 
- src/main.ml     |  4 [32m++[m[31m--[m
- src/package.ml  | 35 [32m+++++++++++++++++++++[m[31m--------------[m
- src/package.mli |  4 [32m++[m[31m--[m
+ src/main.ml     |  4 ++--
+ src/package.ml  | 35 +++++++++++++++++++++--------------
+ src/package.mli |  4 ++--
  3 files changed, 25 insertions(+), 18 deletions(-)
 
-[33mcommit 598d84eea5639c8cb515a6bddf50470e791fa165[m
+commit 598d84eea5639c8cb515a6bddf50470e791fa165
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Nov 27 22:22:40 2016 -0500
 
     Implement package compression and decompression
 
- install.sh      |  2 [32m+[m[31m-[m
- src/.merlin     |  1 [32m+[m
- src/Makefile    |  4 [32m++[m[31m--[m
- src/main.ml     |  7 [32m+++++[m[31m--[m
- src/package.ml  | 11 [32m+++++++++++[m
- src/package.mli |  4 [32m++++[m
+ install.sh      |  2 +-
+ src/.merlin     |  1 +
+ src/Makefile    |  4 ++--
+ src/main.ml     |  7 +++++--
+ src/package.ml  | 11 +++++++++++
+ src/package.mli |  4 ++++
  6 files changed, 24 insertions(+), 5 deletions(-)
 
-[33mcommit cc3eb99921af2986c9abeb51e28abfdd0943b212[m
+commit cc3eb99921af2986c9abeb51e28abfdd0943b212
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sun Nov 27 21:33:43 2016 -0500
 
     Implement image serialization and deserialization
 
- install.sh      |  2 [32m+[m[31m-[m
- src/.merlin     |  1 [32m+[m
- src/Makefile    | 16 [32m++++++++[m[31m--------[m
- src/cv.ml       |  8 [32m++++++++[m
- src/cv.mli      |  1 [32m+[m
- src/main.ml     |  4 [32m+++[m[31m-[m
+ install.sh      |  2 +-
+ src/.merlin     |  1 +
+ src/Makefile    | 16 ++++++++--------
+ src/cv.ml       |  8 ++++++++
+ src/cv.mli      |  1 +
+ src/main.ml     |  4 +++-
  src/main.mli    |  0
- src/package.ml  | 30 [32m++++++++++++++++++++++++++++++[m
- src/package.mli |  4 [32m++++[m
+ src/package.ml  | 30 ++++++++++++++++++++++++++++++
+ src/package.mli |  4 ++++
  9 files changed, 56 insertions(+), 10 deletions(-)
 
-[33mcommit 3bf31885eb3dcd6267938f755c4fec592a846dd8[m
+commit 3bf31885eb3dcd6267938f755c4fec592a846dd8
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Nov 26 23:30:11 2016 -0500
 
     Add packager module
 
- src/Makefile    | 4 [32m+++[m[31m-[m
- src/package.ml  | 7 [32m+++++++[m
- src/package.mli | 6 [32m++++++[m
+ src/Makefile    | 4 +++-
+ src/package.ml  | 7 +++++++
+ src/package.mli | 6 ++++++
  3 files changed, 16 insertions(+), 1 deletion(-)
 
-[33mcommit f25c9c5be13ec901d80340b69d8eb3341c0e1144[m
+commit f25c9c5be13ec901d80340b69d8eb3341c0e1144
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Nov 26 23:25:34 2016 -0500
 
     Move program to main.ml; Update makefile
 
- src/Makefile |  19 [32m+[m[31m-[m
- src/cv.ml    | 888 [32m+++++++++++++++++++++++++++++[m[31m------------------------------[m
- src/cv.mli   |   9 [32m+[m
- src/main.ml  |  26 [32m++[m
+ src/Makefile |  19 +-
+ src/cv.ml    | 888 +++++++++++++++++++++++++++++------------------------------
+ src/cv.mli   |   9 +
+ src/main.ml  |  26 ++
  4 files changed, 486 insertions(+), 456 deletions(-)
 
-[33mcommit e3aac1c217c9a4b9e2d10a6da9ba92ac532b1d8b[m
+commit e3aac1c217c9a4b9e2d10a6da9ba92ac532b1d8b
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Sat Nov 26 23:22:38 2016 -0500
 
     Update .gitignore
 
- .gitignore | 16 [32m++++++++++++++++[m
+ .gitignore | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-[33mcommit 11efd8b06e103971caf85151ab9ed1593a6bd47d[m
+commit 11efd8b06e103971caf85151ab9ed1593a6bd47d
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Nov 26 21:24:04 2016 -0500
 
     Add module interface for cv bindings
 
- src/cv.ml  |  1 [32m+[m
- src/cv.mli | 19 [32m+++++++++++++++++++[m
+ src/cv.ml  |  1 +
+ src/cv.mli | 19 +++++++++++++++++++
  2 files changed, 20 insertions(+)
 
-[33mcommit da2df3dc7e0d7449517ecb3d2fea32335109d30d[m
+commit da2df3dc7e0d7449517ecb3d2fea32335109d30d
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Sat Nov 26 21:11:20 2016 -0500
 
     Add record type for image; Modularize bindings interface
 
- src/cv.ml | 63 [32m+++++++++++++++++++++++++++++++++++++[m[31m--------------------------[m
+ src/cv.ml | 63 +++++++++++++++++++++++++++++++++++++--------------------------
  1 file changed, 37 insertions(+), 26 deletions(-)
 
-[33mcommit a2d0298b7d367ddbd95bf4a34e39b0782ddebaf4[m
+commit a2d0298b7d367ddbd95bf4a34e39b0782ddebaf4
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Thu Nov 17 12:15:12 2016 -0500
 
     Update install script
 
  install-opencv-unix.sh | 0
- install.sh             | 4 [32m+++[m[31m-[m
- src/cv.c               | 2 [32m++[m
+ install.sh             | 4 +++-
+ src/cv.c               | 2 ++
  3 files changed, 5 insertions(+), 1 deletion(-)
 
-[33mcommit 4870cfbb0d213e0e79880f8b00129f68905d829a[m
+commit 4870cfbb0d213e0e79880f8b00129f68905d829a
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Thu Nov 17 11:50:46 2016 -0500
 
     Add merlin configuration
 
- .gitignore  | 1 [31m-[m
- src/.merlin | 4 [32m++++[m
+ .gitignore  | 1 -
+ src/.merlin | 4 ++++
  2 files changed, 4 insertions(+), 1 deletion(-)
 
-[33mcommit f68b3385cecbb4e75179a145adc4d2435d775d49[m
+commit f68b3385cecbb4e75179a145adc4d2435d775d49
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Thu Nov 17 01:25:35 2016 -0500
 
     Add OpenCV installation script; Migrate to OpenCV 3.1
 
- install-opencv-unix.sh | 57 [32m++++++++++++++++++++++++++++++++++++++++++++++++++[m
- lib/Makefile           |  2 [32m+[m[31m-[m
- lib/foo.c              |  6 [32m++++[m[31m--[m
- src/Makefile           |  2 [32m+[m[31m-[m
- src/cv.c               |  8 [32m++++[m[31m---[m
+ install-opencv-unix.sh | 57 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/Makefile           |  2 +-
+ lib/foo.c              |  6 ++++--
+ src/Makefile           |  2 +-
+ src/cv.c               |  8 ++++---
  5 files changed, 68 insertions(+), 7 deletions(-)
 
-[33mcommit a96ff1c490e30d43217d1c433b228a66e9e2396c[m
+commit a96ff1c490e30d43217d1c433b228a66e9e2396c
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Wed Nov 16 14:55:44 2016 -0500
 
     Convert color only mode to text-only mode
 
- src/cv.ml | 23 [32m+++++++++++[m[31m------------[m
+ src/cv.ml | 23 +++++++++++------------
  1 file changed, 11 insertions(+), 12 deletions(-)
 
-[33mcommit 339d876e6fb002dfeeec1e6c519084037e982646[m
+commit 339d876e6fb002dfeeec1e6c519084037e982646
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Wed Nov 16 12:30:21 2016 -0500
 
     Add grabber thread to avoid retrieving stale frames from VideoCapture
 
- src/Makefile |  2 [32m+[m[31m-[m
- src/cv.c     | 26 [32m+++++++++++++++++++++++++[m[31m-[m
- src/cv.ml    | 12 [32m+++++++++[m[31m---[m
+ src/Makefile |  2 +-
+ src/cv.c     | 26 +++++++++++++++++++++++++-
+ src/cv.ml    | 12 +++++++++---
  3 files changed, 35 insertions(+), 5 deletions(-)
 
-[33mcommit ba5afa842d54b33287a1f6f0262d53c088469363[m
+commit ba5afa842d54b33287a1f6f0262d53c088469363
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 20:21:02 2016 -0500
 
     Add higher-resolution grayscale colors
 
- src/cv.ml | 74 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m[31m-----[m
+ src/cv.ml | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
  1 file changed, 69 insertions(+), 5 deletions(-)
 
-[33mcommit 0a99c15daed4b743f0aac2160f60b974e11a18c5[m
+commit 0a99c15daed4b743f0aac2160f60b974e11a18c5
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 18:18:50 2016 -0500
 
     Add colors-only rendering mode
 
- src/cv.ml | 23 [32m+++++++++++++++[m[31m--------[m
+ src/cv.ml | 23 +++++++++++++++--------
  1 file changed, 15 insertions(+), 8 deletions(-)
 
-[33mcommit 305910e147d997ecd78dae2ce8ea49fc9873cb46[m
+commit 305910e147d997ecd78dae2ce8ea49fc9873cb46
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 17:40:29 2016 -0500
 
@@ -1211,170 +1232,170 @@ Date:   Tue Nov 15 17:40:29 2016 -0500
     
     Move size control to OCaml
 
- src/cv.c  |  8 [32m+++[m[31m----[m
- src/cv.h  |  2 [32m+[m[31m-[m
- src/cv.ml | 75 [32m+++++++++++++++++++++++++++++++++++++++++++++[m[31m------------------[m
+ src/cv.c  |  8 +++----
+ src/cv.h  |  2 +-
+ src/cv.ml | 75 +++++++++++++++++++++++++++++++++++++++++++++------------------
  3 files changed, 58 insertions(+), 27 deletions(-)
 
-[33mcommit 59aecc40317b8857138940969d30ce33558b44cd[m
+commit 59aecc40317b8857138940969d30ce33558b44cd
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 16:52:12 2016 -0500
 
     Implement colorization
 
- src/cv.c  |   2 [32m+[m[31m-[m
- src/cv.ml | 337 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m[31m--[m
+ src/cv.c  |   2 +-
+ src/cv.ml | 337 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
  2 files changed, 329 insertions(+), 10 deletions(-)
 
-[33mcommit b19242cf7d96a5effa3b73b059403c2657e0c1a0[m
+commit b19242cf7d96a5effa3b73b059403c2657e0c1a0
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 12:29:26 2016 -0500
 
     Use byte sequences instead of strings to avoid realloc overhead
 
- src/cv.ml | 24 [32m++++++++++++++++[m[31m--------[m
+ src/cv.ml | 24 ++++++++++++++++--------
  1 file changed, 16 insertions(+), 8 deletions(-)
 
-[33mcommit 283e042c82c23866da168b3dc5361a89079a4947[m
+commit 283e042c82c23866da168b3dc5361a89079a4947
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 11:52:34 2016 -0500
 
     Add redrawing loop; Compile to native binary
 
- src/Makefile |  4 [32m++[m[31m--[m
- src/cv.c     |  7 [32m++++[m[31m---[m
- src/cv.ml    | 42 [32m++++++++++++++++++++++++++++++[m[31m------------[m
+ src/Makefile |  4 ++--
+ src/cv.c     |  7 ++++---
+ src/cv.ml    | 42 ++++++++++++++++++++++++++++++------------
  3 files changed, 36 insertions(+), 17 deletions(-)
 
-[33mcommit 6bb0e31fca9b85084efa5f29a4ba1855243d4184[m
+commit 6bb0e31fca9b85084efa5f29a4ba1855243d4184
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 10:39:21 2016 -0500
 
     Implement image resizing and basic ascii-fication
 
- src/cv.c  | 10 [32m+++++++[m[31m---[m
- src/cv.ml | 14 [32m++++++++++++++[m
+ src/cv.c  | 10 +++++++---
+ src/cv.ml | 14 ++++++++++++++
  2 files changed, 21 insertions(+), 3 deletions(-)
 
-[33mcommit 5a8c1a1f33ca33ffaf72b7e468809d4f212a6cd5[m
+commit 5a8c1a1f33ca33ffaf72b7e468809d4f212a6cd5
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 00:36:08 2016 -0500
 
     Avoid re-creating VideoCapture; clean up allocated memory
 
- src/cv.c  | 20 [32m+++++++++++++++++[m[31m---[m
- src/cv.h  |  1 [32m+[m
- src/cv.ml | 19 [32m++++++++++++[m[31m-------[m
+ src/cv.c  | 20 +++++++++++++++++---
+ src/cv.h  |  1 +
+ src/cv.ml | 19 ++++++++++++-------
  3 files changed, 30 insertions(+), 10 deletions(-)
 
-[33mcommit ef9ed8b4d78aa3b323a037fd81e8f2442a1ca142[m
+commit ef9ed8b4d78aa3b323a037fd81e8f2442a1ca142
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Tue Nov 15 00:25:14 2016 -0500
 
     Implement reading of image frame into uchar array using OpenCV bindings
 
- src/Makefile | 14 [32m++++++++++++++[m
- src/cv.c     | 44 [32m++++++++++++++++++++++++++++++++++++++++++++[m
- src/cv.h     | 11 [32m+++++++++++[m
- src/cv.ml    | 34 [32m++++++++++++++++++++++++++++++++++[m
+ src/Makefile | 14 ++++++++++++++
+ src/cv.c     | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ src/cv.h     | 11 +++++++++++
+ src/cv.ml    | 34 ++++++++++++++++++++++++++++++++++
  4 files changed, 103 insertions(+)
 
-[33mcommit e806a2ba8f4c27926a571e63bd2dd01daf21d97a[m
+commit e806a2ba8f4c27926a571e63bd2dd01daf21d97a
 Author: Chesley Tan <chesleytan97@gmail.com>
 Date:   Mon Nov 14 22:19:57 2016 -0500
 
     Add demo video to proof-of-concept
 
- lib/foo.c | 10 [32m++++++++[m[31m--[m
+ lib/foo.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-[33mcommit 7df1795a31ea8a29942fbc596c2f8f7ade2e162e[m
+commit 7df1795a31ea8a29942fbc596c2f8f7ade2e162e
 Author: Chesley Tan <ct353@cornell.edu>
 Date:   Mon Nov 14 20:28:51 2016 -0500
 
     Add opencv proof-of-concept
 
- install.sh   |  2 [32m+[m[31m-[m
- lib/Makefile |  5 [32m+++[m[31m--[m
- lib/foo.c    | 11 [32m++++++++++[m[31m-[m
+ install.sh   |  2 +-
+ lib/Makefile |  5 +++--
+ lib/foo.c    | 11 ++++++++++-
  3 files changed, 14 insertions(+), 4 deletions(-)
 
-[33mcommit 2e8ff267bb2f0266e80de961c42acb50ee408b58[m
+commit 2e8ff267bb2f0266e80de961c42acb50ee408b58
 Author: Lucas Chen <lmc336@cornell.edu>
 Date:   Thu Nov 10 01:54:55 2016 -0500
 
     Updated Design Doc
 
- MS1Design.pdf | Bin [31m0[m -> [32m131165[m bytes
+ MS1Design.pdf | Bin 0 -> 131165 bytes
  1 file changed, 0 insertions(+), 0 deletions(-)
 
-[33mcommit e42868053b080f965895ecfc52b579c2416aa022[m
+commit e42868053b080f965895ecfc52b579c2416aa022
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Thu Nov 10 01:36:59 2016 -0500
 
     Add basic interfaces
 
- interfaces/audio.mli            |  5 [32m+++++[m
- interfaces/convert_to_ascii.mli |  9 [32m+++++++++[m
- interfaces/convert_to_color.mli |  9 [32m+++++++++[m
- interfaces/decryption.mli       | 11 [32m+++++++++++[m
- interfaces/encryption.mli       | 11 [32m+++++++++++[m
- interfaces/image.mli            | 12 [32m++++++++++++[m
- interfaces/image_convert.mli    |  9 [32m+++++++++[m
- interfaces/network.mli          |  9 [32m+++++++++[m
- interfaces/opencv.mli           |  7 [32m+++++++[m
- interfaces/package.mli          | 17 [32m+++++++++++++++++[m
- interfaces/view.mli             |  9 [32m+++++++++[m
+ interfaces/audio.mli            |  5 +++++
+ interfaces/convert_to_ascii.mli |  9 +++++++++
+ interfaces/convert_to_color.mli |  9 +++++++++
+ interfaces/decryption.mli       | 11 +++++++++++
+ interfaces/encryption.mli       | 11 +++++++++++
+ interfaces/image.mli            | 12 ++++++++++++
+ interfaces/image_convert.mli    |  9 +++++++++
+ interfaces/network.mli          |  9 +++++++++
+ interfaces/opencv.mli           |  7 +++++++
+ interfaces/package.mli          | 17 +++++++++++++++++
+ interfaces/view.mli             |  9 +++++++++
  11 files changed, 108 insertions(+)
 
-[33mcommit a8e03812d6b9014d58f7385b9f186d4339960504[m
+commit a8e03812d6b9014d58f7385b9f186d4339960504
 Author: Chesley Tan <ct353@cornell.edu>
 Date:   Tue Nov 8 00:45:00 2016 -0500
 
     Add proof-of-concept and installation script for ocaml-ctypes integration
 
- install.sh   | 2 [32m++[m
- lib/Makefile | 8 [32m++++++++[m
- lib/foo.c    | 7 [32m+++++++[m
- lib/foo.h    | 8 [32m++++++++[m
- lib/foo.ml   | 4 [32m++++[m
+ install.sh   | 2 ++
+ lib/Makefile | 8 ++++++++
+ lib/foo.c    | 7 +++++++
+ lib/foo.h    | 8 ++++++++
+ lib/foo.ml   | 4 ++++
  5 files changed, 29 insertions(+)
 
-[33mcommit ae5ffc6525c7c4254ce74ed92ea38c599b9e5ca1[m
+commit ae5ffc6525c7c4254ce74ed92ea38c599b9e5ca1
 Author: Chesley Tan <ct353@cornell.edu>
 Date:   Fri Oct 21 22:22:40 2016 -0400
 
     Update charter
 
- MS0Charter.pdf | Bin [31m43763[m -> [32m43194[m bytes
+ MS0Charter.pdf | Bin 43763 -> 43194 bytes
  1 file changed, 0 insertions(+), 0 deletions(-)
 
-[33mcommit 9639f797cabc4dc569e52b4394a2823cbbd82fa8[m
+commit 9639f797cabc4dc569e52b4394a2823cbbd82fa8
 Author: Chesley Tan <ct353@cornell.edu>
 Date:   Fri Oct 21 22:11:36 2016 -0400
 
     Add project charter
 
- MS0Charter.pdf | Bin [31m0[m -> [32m43763[m bytes
+ MS0Charter.pdf | Bin 0 -> 43763 bytes
  1 file changed, 0 insertions(+), 0 deletions(-)
 
-[33mcommit 29afd439731ae795631dff986dba48f929724658[m
+commit 29afd439731ae795631dff986dba48f929724658
 Author: Chesley Tan <ct353@cornell.edu>
 Date:   Fri Oct 21 21:08:16 2016 -0400
 
     Update license and .gitignore
 
- .gitignore | 2 [32m++[m
- LICENSE    | 2 [32m+[m[31m-[m
+ .gitignore | 2 ++
+ LICENSE    | 2 +-
  2 files changed, 3 insertions(+), 1 deletion(-)
 
-[33mcommit 15e83d8c46fb436449ccf2300d2b9d2c77a4fc75[m
+commit 15e83d8c46fb436449ccf2300d2b9d2c77a4fc75
 Author: Chesley Tan <ChesleyTan@users.noreply.github.com>
 Date:   Fri Oct 21 21:00:51 2016 -0400
 
     Initial commit
 
- .gitignore | 20 [32m++++++++++++++++++++[m
- LICENSE    | 21 [32m+++++++++++++++++++++[m
- README.md  |  2 [32m++[m
+ .gitignore | 20 ++++++++++++++++++++
+ LICENSE    | 21 +++++++++++++++++++++
+ README.md  |  2 ++
  3 files changed, 43 insertions(+)

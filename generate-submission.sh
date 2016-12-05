@@ -3,7 +3,7 @@
 FILES="*"
 EXCLUDE=".git/* src/TODO.txt submission.zip sync.sh"
 
-git log --stat > gitlog.txt
+git log --stat > vclog.txt
 cd src
 make clean
 cd ..
