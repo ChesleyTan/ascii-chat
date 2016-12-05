@@ -82,7 +82,8 @@ and handle_drop id =
   try
     let (ic, oc, fd) = Hashtbl.find connections id in
     shutdown_connection ic oc fd;
-    Hashtbl.remove connections id
+    Hashtbl.remove connections id;
+    delete_package_for_user id
   with
   | Not_found -> ()
 
@@ -138,7 +139,10 @@ and accept_connection cb new_client (fd, _) =
     if new_client then broadcast_gossip ();
     send_gossip oc;
     Lwt_preemptive.detach (fun () ->
-      handle_connection cb id ic ()
+      try
+        handle_connection cb id ic ()
+      with
+      | Unix.Unix_error (e, _, _) -> print_endline @@ Unix.error_message e;
     ) () |> ignore
   end
 
