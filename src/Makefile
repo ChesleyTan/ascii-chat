@@ -38,6 +38,6 @@ test: clean sharedlib bindings $(OBJ) test_main.cmx
 	./test_main -runner sequential
 
 clean:
-	rm -f ascii-chat *.cmi *.cmx *.o
+	rm -f ascii-chat test_main *.cmi *.cmx *.o
 
 .PHONY: default all clean sharedlib utils bindings main test no-bindings
