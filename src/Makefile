@@ -1,9 +1,10 @@
 TARGET=main test
 OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx test_messaging.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,ounit
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,oUnit
 OPTS=-thread
 
 all: clean sharedlib bindings $(TARGET)
+no-sharedlib: clean bindings $(TARGET)
 
 sharedlib: cv utils
 	@(which ldconfig > /dev/null && sudo ldconfig) || true
@@ -17,7 +18,7 @@ cv: cv.cpp cv.h
 
 utils: utils.c utils.h
 	@echo "Compiling and linking utilities"
-	gcc -shared -Wall utils.c -o libasciichat_utils.so
+	gcc -shared -fPIC -Wall utils.c -o libasciichat_utils.so
 	chmod 755 libasciichat_utils.so
 	sudo rm -f /usr/local/lib/libasciichat_utils.so
 	sudo cp libasciichat_utils.so /usr/local/lib
@@ -28,7 +29,7 @@ utils: utils.c utils.h
 %.cmx: %.ml %.cmi
 	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) $< -c
 
-bindings: sharedlib cv.cmi cv.cmx utils.cmi utils.cmx
+bindings: cv.cmi cv.cmx utils.cmi utils.cmx
 
 main: bindings $(OBJ) main.cmx
 	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx utils.cmx $(OBJ) main.cmx -cclib -lasciichat_cv -cclib -lasciichat_utils -o ascii-chat
@@ -39,4 +40,4 @@ test: bindings $(OBJ) test_main.cmx
 clean:
 	rm -f ascii-chat *.cmi *.cmx *.o libasciichat_cv.so libasciichat_utils.so
 
-.PHONY: default all clean sharedlib cv utils bindings main test
+.PHONY: default all clean sharedlib cv utils bindings main test no-bindings
