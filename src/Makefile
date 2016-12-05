@@ -1,5 +1,5 @@
-TARGET=main
-OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx main.cmx
+TARGET=main test
+OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx
 OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit,ounit
 OPTS=-thread
 
@@ -30,8 +30,11 @@ utils: utils.c utils.h
 
 bindings: sharedlib cv.cmi cv.cmx utils.cmi utils.cmx
 
-main: bindings $(OBJ)
-	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx utils.cmx $(OBJ) -cclib -lasciichat_cv -cclib -lasciichat_utils -o ascii-chat
+main: bindings $(OBJ) main.cmx
+	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx utils.cmx $(OBJ) main.cmx -cclib -lasciichat_cv -cclib -lasciichat_utils -o ascii-chat
+
+test: bindings $(OBJ) test_main.cmx
+	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx utils.cmx $(OBJ) test_main.cmx -cclib -lasciichat_cv -cclib -lasciichat_utils -o test_main
 
 clean:
 	rm -f ascii-chat *.cmi *.cmx *.o libasciichat_cv.so libasciichat_utils.so
