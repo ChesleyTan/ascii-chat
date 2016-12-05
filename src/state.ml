@@ -31,7 +31,7 @@ let init_state curr_user =
                       ; text_only  = true
                       } in
     current_user := curr_user;
-    pack dummy_image "" 0 |> Hashtbl.add package_mapping curr_user
+    pack dummy_image "" 0 0 |> Hashtbl.add package_mapping curr_user
 
 (* Updates user package with text message from the input box buffer, and posts
  * contents of text buffer to the history buffer in the messaging module for
@@ -40,9 +40,10 @@ let log_message () =
     (* Update package in package mapping and post the updated package to
     the messaging module *)
     if Hashtbl.mem package_mapping !current_user then
-        let (image, _, _) =
+        let (image, _, image_timestamp, _) =
             Hashtbl.find package_mapping !current_user |> unpack in
-        let new_package = pack image !input_buffer (get_timestamp ()) in
+        let new_package =
+            pack image !input_buffer image_timestamp (get_timestamp ()) in
         Hashtbl.replace package_mapping !current_user new_package;
         refresh_history_buffer !current_user new_package;
         input_buffer := ""
@@ -51,9 +52,10 @@ let log_message () =
 (* Updates user package the new image received *)
 let log_image new_image =
     if Hashtbl.mem package_mapping !current_user then
-        let (_, text, _) =
+        let (_, text, _, text_timestamp) =
             Hashtbl.find package_mapping !current_user |> unpack in
-        let new_package = pack new_image text (get_timestamp ()) in
+        let new_package =
+            pack new_image text (get_timestamp ()) text_timestamp in
         Hashtbl.replace package_mapping !current_user new_package;
         send new_package
     else ()
@@ -64,15 +66,26 @@ let refresh_package user package =
     check if the timestamp of the package is newer than the timestamp of the
     received package, and update the package in the mapping with the newer
     package *)
-    let (_, _, new_timestamp) = unpack package in
+    let (_, _, new_image_timestamp, new_text_timestamp) = unpack package in
     if Hashtbl.mem package_mapping user then
-        let (_, _, timestamp) =
-            Hashtbl.find package_mapping user |> unpack in
-        if new_timestamp > timestamp then
-            Hashtbl.replace package_mapping user package
-        else ()
+        begin
+            let (_, _, image_timestamp, text_timestamp) =
+                Hashtbl.find package_mapping user |> unpack in
+            if new_image_timestamp > image_timestamp then
+                Hashtbl.replace package_mapping user package
+            else ();
+            if new_text_timestamp > text_timestamp then
+                begin
+                    Hashtbl.replace package_mapping user package;
+                    refresh_history_buffer user package
+                end
+            else ()
+        end
     else
-        Hashtbl.add package_mapping user package
+        begin
+            Hashtbl.add package_mapping user package;
+            refresh_history_buffer user package
+        end
 
 let get_num_users () = Hashtbl.length package_mapping
 

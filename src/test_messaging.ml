@@ -21,16 +21,16 @@ let text7 = "vita detestabilis"
 let text8 = "nunc obdurat"
 let text9 = "et tunc curat"
 
-let package1 = Package.pack image1 text1 10
-let package2 = Package.pack image2 text2 11
-let package3 = Package.pack image1 text1 9
-let package4 = Package.pack image2 text3 12
-let package5 = Package.pack image1 text4 15
-let package6 = Package.pack image2 text5 8
-let package7 = Package.pack image1 text6 13
-let package8 = Package.pack image2 text7 17
-let package9 = Package.pack image1 text8 14
-let package10 = Package.pack image2 text9 18
+let package1 = Package.pack image1 text1 10 10
+let package2 = Package.pack image2 text2 11 11
+let package3 = Package.pack image1 text1 9 9
+let package4 = Package.pack image2 text3 12 12
+let package5 = Package.pack image1 text4 15 15
+let package6 = Package.pack image2 text5 8 8
+let package7 = Package.pack image1 text6 13 13
+let package8 = Package.pack image2 text7 17 17
+let package9 = Package.pack image1 text8 14 14
+let package10 = Package.pack image2 text9 18 18
 
 (* Testing helper functions*)
 let assert_int = assert_equal ~printer: string_of_int

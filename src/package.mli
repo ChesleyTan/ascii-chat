@@ -3,9 +3,9 @@ type package
 
 val get_timestamp: unit -> int
 
-val pack: image -> string -> int -> package
+val pack: image -> string -> int -> int -> package
 
-val unpack: package -> (image * string * int)
+val unpack: package -> (image * string * int * int)
 
 val serialize: package -> string
 

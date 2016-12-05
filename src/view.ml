@@ -251,7 +251,7 @@ let render text_only =
     and chat_history = chat_history_to_string ()
     and input_buffer = get_input_buffer_contents () in
     let render_image idx package =
-        let (image, _, _) = unpack package in
+        let (image, _, _, _) = unpack package in
         image |>
         Cv.colorize text_only |>
         copy_to_grid (pane_start_coord idx layout) (image_dimensions layout) in

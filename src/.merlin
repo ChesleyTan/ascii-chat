@@ -3,6 +3,5 @@ S .
 PKG ctypes
 PKG ctypes.foreign
 PKG yojson
-PKG lz4
-PKG lambda-term
 PKG lwt
+PKG cryptokit

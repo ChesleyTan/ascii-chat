@@ -2,7 +2,8 @@ open Cv
 
 type package = { image: image
                ; text: string
-               ; timestamp: int (* Time since epoch in milliseconds *)
+               ; image_timestamp: int (* Time since epoch in milliseconds *)
+               ; text_timestamp: int (* Time since epoch in milliseconds *)
                }
 
 (* AES encryption key *)
@@ -10,11 +11,13 @@ let encryption_key = ref ""
 
 let get_timestamp () = Unix.gettimeofday () *. 1000. |> int_of_float
 
-let pack image text timestamp = {image; text; timestamp}
+let pack image text image_timestamp text_timestamp =
+    {image; text; image_timestamp; text_timestamp}
 
-let unpack {image; text; timestamp} = (image, text, timestamp)
+let unpack {image; text; image_timestamp; text_timestamp} =
+    (image, text, image_timestamp, text_timestamp)
 
-let serialize {image; text; timestamp} =
+let serialize {image; text; image_timestamp; text_timestamp} =
     let open Yojson.Basic in
     let {data; colors; width; height; text_only} = image in
     let data_string = FastString.to_string data
@@ -27,7 +30,8 @@ let serialize {image; text; timestamp} =
                   ; ("text_only", `Bool text_only)
                   ])
            ; ("text", `String text)
-           ; ("timestamp", `Int timestamp)
+           ; ("image_timestamp", `Int image_timestamp)
+           ; ("text_timestamp", `Int text_timestamp)
            ] |> to_string
 
 let deserialize json_string =
@@ -35,7 +39,8 @@ let deserialize json_string =
     let json = Yojson.Basic.from_string json_string in
     let image_json = json |> member "image"
     and text_json = json |> member "text"
-    and timestamp_json = json |> member "timestamp" in
+    and image_timestamp_json = json |> member "image_timestamp"
+    and text_timestamp_json = json |> member "text_timestamp" in
     let data = image_json |> member "data" |> to_string |> FastString.of_string
     and colors = image_json |> member "colors" |>
                  to_list |> Array.of_list |> Array.map to_string
@@ -43,7 +48,8 @@ let deserialize json_string =
     and height = image_json |> member "height" |> to_int
     and text_only = image_json |> member "text_only" |> to_bool
     and text = text_json |> to_string
-    and timestamp = timestamp_json |> to_int
+    and image_timestamp = image_timestamp_json |> to_int
+    and text_timestamp = text_timestamp_json |> to_int
     in { image = { data
                  ; colors
                  ; width
@@ -51,7 +57,8 @@ let deserialize json_string =
                  ; text_only
                  }
        ; text = text
-       ; timestamp = timestamp
+       ; image_timestamp = image_timestamp
+       ; text_timestamp = text_timestamp
        }
 
 let get_encryption_key () = !encryption_key
