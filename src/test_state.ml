@@ -45,7 +45,7 @@ let tests = [
     "log2"  >:: (fun _ -> assert_string ""
         (State.init_state user1; Package.generate_encryption_key "key";
         State.log_message (); State.get_input_buffer_contents ()));
-    "log3"  >:: (fun _ -> assert_string "user1@10: O F\na"
+    "log3"  >:: (fun _ -> assert_string "98.139.180.149:10: O F\na"
         (Messaging.chat_history_to_string ()));
 
 (*Test state helper functions*)
