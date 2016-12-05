@@ -1,6 +1,6 @@
 TARGET=main
-OBJ=package.cmx view.cmx messaging.cmx state.cmx main.cmx
-OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lz4,lambda-term,lwt,lwt.preemptive,lwt.unix,oUnit
+OBJ=package.cmx messaging.cmx state.cmx network.cmx view.cmx main.cmx
+OCAMLPKGS=ctypes,ctypes.foreign,unix,yojson,lwt,lwt.preemptive,lwt.unix,cryptokit
 OPTS=-thread
 
 test:

@@ -5,6 +5,7 @@ open Package
 open View
 open State
 open Utils
+open Network
 
 let time f =
     let start = Unix.gettimeofday () in
@@ -109,7 +110,7 @@ let main () =
     else ();
     set_non_canonical_term ();
     check_terminal_dimensions ();
-    let curr_user = (get_address_self ()) ^ ":" ^ (string_of_int !port) in
+    let curr_user = my_address ^ ":" ^ (string_of_int !port) in
     print_endline ("Running on " ^ curr_user);
     init_state curr_user;
     clear_screen ();
