@@ -73,17 +73,17 @@ and handle_msg cb id ic msg_len =
           print_debug_endline @@ "Received: " ^ ciphertext;
           (* TODO: handle gracefully *)
           let package = ciphertext |> decrypt |> deserialize in
-            cb id package
+            (fst cb) id package
         else print_debug_endline @@ "Message length cannot be 0"
       end
   | None -> print_debug_endline @@ "Message length not an integer: " ^ msg_len
 
-and handle_drop id =
+and handle_drop cb id =
   try
     let (ic, oc, fd) = Hashtbl.find connections id in
     shutdown_connection ic oc fd;
     Hashtbl.remove connections id;
-    delete_package_for_user id
+    (snd cb) id
   with
   | Not_found -> ()
 
@@ -94,7 +94,7 @@ and handle_line cb id ic line =
     match String.get line 0 with
     | 'G' -> handle_gossip cb data
     | 'M' -> handle_msg cb id ic data
-    | 'D' -> handle_drop data
+    | 'D' -> handle_drop cb data
     | c -> print_debug_endline @@ "Received unknown header: " ^ (String.make 1 c)
   else print_debug_endline @@ "Received invalid line: " ^ line
 
@@ -106,7 +106,7 @@ and handle_connection cb id ic () =
   | End_of_file ->
       begin
         print_debug_endline @@ "Connection dropped: " ^ id;
-        handle_drop id
+        handle_drop cb id
       end
 
 and handle_identity oc line =

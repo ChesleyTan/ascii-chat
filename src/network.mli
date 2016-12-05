@@ -7,9 +7,11 @@ val my_address : string
 val send : package -> unit
 
 (* initializes the network.
- * [network_initialize port f] starts a server and listens for available packets
- * on [port]. The callback function [f] is called on the received packet.
- * [f user package] should handle the [package] received from the [user]
+ * [network_initialize port f host] starts a server and connects to [host] if
+ * [host] is not an empty string. The server listens for available packets
+ * on [port]. The callback functions [f] is called on the received packets.
+ * [(fst f) user package] should handle the [package] received from the [user]
+ * [(snd f) user] should handle removal of the [user]
  *)
-val network_initialize : int -> (string -> package -> unit) -> string
-                         -> unit Lwt.t
+val network_initialize : int -> (string -> package -> unit) * (string -> unit)
+                         -> string -> unit Lwt.t

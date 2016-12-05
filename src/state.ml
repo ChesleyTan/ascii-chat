@@ -94,7 +94,7 @@ let get_input_buffer_contents () = !input_buffer
 
 let get_input_buffer_length () = String.length !input_buffer
 
-let delete_package_for_user user =
+let delete_user user =
     Hashtbl.remove package_mapping user
 
 let get_packages () =

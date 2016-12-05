@@ -117,7 +117,7 @@ let main () =
     print_endline ("Running on " ^ curr_user);
     init_state curr_user;
     let _ = Lwt_preemptive.detach (fun () ->
-        network_initialize !port refresh_package !host_addr
+        network_initialize !port (refresh_package, delete_user) !host_addr
     ) () in
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->
