@@ -22,7 +22,7 @@ let broadcast data =
 
 let send package =
   let msg = package |> serialize |> encrypt in
-  print_debug_endline @@ "Broadcasting message: " ^ msg;
+  print_debug_endline "Broadcasting message";
   broadcast @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg ^ "\n"
 
 let send_gossip oc =
@@ -35,10 +35,6 @@ let broadcast_gossip () =
   let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
   print_debug_endline @@ "Broadcasting gossip: " ^ gossip;
   broadcast @@ "G" ^ gossip ^ "\n"
-
-let broadcast_drop id =
-  print_debug_endline @@ "Broadcasting drop: " ^ id;
-  broadcast @@ "D" ^ id ^ "\n"
 
 let rec open_connection cb id =
   match Str.split (Str.regexp ":") id with
@@ -70,10 +66,8 @@ and handle_msg cb id ic msg_len =
       begin
         if len > 0 then
           let ciphertext = really_input_string ic len in
-          print_debug_endline @@ "Received: " ^ ciphertext;
-          (* TODO: handle gracefully *)
           let package = ciphertext |> decrypt |> deserialize in
-            (fst cb) id package
+          (fst cb) id package
         else print_debug_endline @@ "Message length cannot be 0"
       end
   | None -> print_debug_endline @@ "Message length not an integer: " ^ msg_len
@@ -94,7 +88,6 @@ and handle_line cb id ic line =
     match String.get line 0 with
     | 'G' -> handle_gossip cb data
     | 'M' -> handle_msg cb id ic data
-    | 'D' -> handle_drop cb data
     | c -> print_debug_endline @@ "Received unknown header: " ^ (String.make 1 c)
   else print_debug_endline @@ "Received invalid line: " ^ line
 
@@ -115,7 +108,7 @@ and handle_identity oc line =
     let id = String.sub line 1 (String.length line - 1) in
     match String.get line 0 with
     | 'I' -> id
-    | c -> ""
+    | _ -> ""
   else ""
 
 and shutdown_connection ic oc fd =
@@ -139,11 +132,8 @@ and accept_connection cb new_client (fd, _) =
     if new_client then broadcast_gossip ();
     send_gossip oc;
     Lwt_preemptive.detach (fun () ->
-      try
-        handle_connection cb id ic ()
-      with
-      | Unix.Unix_error (e, _, _) -> print_endline @@ Unix.error_message e;
-    ) () |> ignore
+      handle_connection cb id ic ()
+    ) () |> ignore_result;
   end
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
