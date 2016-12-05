@@ -5,9 +5,9 @@ open State
 open Messaging
 
 (* Testing Variables *)
-let user1 = "user1@10"
-let user2 = "user2@20"
-let user3 = "user2@20"
+let user1 = "98.139.180.149:10"
+let user2 = "98.139.180.150:20"
+let user3 = "98.139.180.151:30"
 
 (* Testing helper functions*)
 let assert_int = assert_equal ~printer: string_of_int
