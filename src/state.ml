@@ -31,7 +31,7 @@ let init_state curr_user =
                       ; text_only  = true
                       } in
     current_user := curr_user;
-    pack dummy_image "" 0 0 |> Hashtbl.add package_mapping curr_user
+    pack dummy_image "Has connected." 0 0 |> Hashtbl.add package_mapping curr_user
 
 (* Updates user package with text message from the input box buffer, and posts
  * contents of text buffer to the history buffer in the messaging module for

@@ -98,6 +98,8 @@ let handle_key_input () =
 
 let main () =
     Arg.parse specs generate_encryption_key help_header;
+    Lwt_preemptive.set_bounds (0, 10);
+    Lwt_preemptive.set_max_number_of_threads_queued 10;
     if not @@ is_encryption_key_set () then
         begin
             print_endline @@ "You must specify a key for encryption.\n" ^
