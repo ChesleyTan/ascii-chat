@@ -12,15 +12,19 @@ let max_rows = 45
 
 let grid = Array.make_matrix max_rows max_cols ""
 
+(* Prints a given string in unbuffered mode *)
 let print_unbuf s =
     Printf.printf "%s%!" s
 
+(* Clears the terminal *)
 let clear_screen () =
     print_unbuf "\x1B[2J"
 
+(* Restores the cursor to the top-left of the terminal *)
 let restore_cursor () =
     print_unbuf "\x1B[;H"
 
+(* Draws the pane outlines given the layout *)
 let outline window =
     match window with
         | One ->
@@ -144,6 +148,8 @@ let outline window =
                 done;
             done
 
+(* Copies a string array array into the grid at the given start position, and
+ * having the given maximum dimensions *)
 let copy_to_grid (start_row, start_col) (cols, rows) g =
     let g_rows = min ((Array.length g) - 1) (rows - 1) in
     if g_rows < 0 then
@@ -159,6 +165,8 @@ let copy_to_grid (start_row, start_col) (cols, rows) g =
                 done
             done
 
+(* Copies a string into the grid at the given start position, and having the
+ * given maximum dimensions *)
 let print_to_grid (start_row, start_col) (max_width, max_height) s =
     (* NOTE: We are assuming that the provided string has no format characters
      * other than newlines *)
@@ -187,29 +195,37 @@ let print_to_grid (start_row, start_col) (max_width, max_height) s =
             else ();
         done
 
+(* Prints the grid out *)
 let print_grid () =
     Array.map (fun xs -> Array.to_list xs |> String.concat "") grid
     |> Array.to_list |> String.concat "\n"
     |> print_unbuf
 
+(* Returns the expected image dimensions for a given window layout *)
 let image_dimensions window = match window with
     | One -> (105, 43)
     | Two -> (80, 32)
     | Three -> (53, 21)
     | Four -> (53, 21)
 
+(* Returns the expected text dimensions for a given window layout *)
 let text_dimensions window = match window with
     | One -> (57, 40)
     | Two -> (163, 8)
     | Three -> (163, 19)
     | Four -> (53, 40)
 
+(* Returns the expected input box dimensions for a given window layout *)
 let input_dimensions window = match window with
     | One -> (57, 2)
     | Two -> (163, 1)
     | Three -> (163, 1)
     | Four -> (53, 2)
 
+(* Returns the top-left coordinate for the given pane in the given window layout
+ * The (n+1)th pane in the `n` layout is the chat box, and the (n+2)th pane is
+ * the input box. All other panes are for user images.
+ *)
 let pane_start_coord pane window = match (pane, window) with
     | 1, One -> (1, 1)
     | 2, One -> (1, 107)
@@ -231,6 +247,7 @@ let pane_start_coord pane window = match (pane, window) with
     | 6, Four -> (42, 111)
     | _ -> failwith "Invalid pane number for window layout!"
 
+(* Returns the window layout associated with the given number of users *)
 let layout_for_num_users n =
     match n with
         | 1 -> One

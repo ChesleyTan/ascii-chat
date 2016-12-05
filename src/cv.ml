@@ -2,6 +2,7 @@ open Ctypes
 open Ctypes.CArray
 open Foreign
 
+(* Fast version of string using byte buffer *)
 module type FastStringSig = sig
     type t
     val create: int -> t

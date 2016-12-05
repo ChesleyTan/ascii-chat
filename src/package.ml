@@ -9,6 +9,7 @@ type package = { image: image
 (* AES encryption key *)
 let encryption_key = ref ""
 
+(* Returns a timestamp in milliseconds since epoch *)
 let get_timestamp () = Unix.gettimeofday () *. 1000. |> int_of_float
 
 let pack image text image_timestamp text_timestamp =
@@ -17,6 +18,7 @@ let pack image text image_timestamp text_timestamp =
 let unpack {image; text; image_timestamp; text_timestamp} =
     (image, text, image_timestamp, text_timestamp)
 
+(* Serializes a data package into a JSON string *)
 let serialize {image; text; image_timestamp; text_timestamp} =
     let open Yojson.Basic in
     let {data; colors; width; height; text_only} = image in
@@ -34,6 +36,7 @@ let serialize {image; text; image_timestamp; text_timestamp} =
            ; ("text_timestamp", `Int text_timestamp)
            ] |> to_string
 
+(* Deserializes a JSON string to a data package *)
 let deserialize json_string =
     let open Yojson.Basic.Util in
     let json = Yojson.Basic.from_string json_string in
@@ -61,10 +64,13 @@ let deserialize json_string =
        ; text_timestamp = text_timestamp
        }
 
+(* Returns the encryption key *)
 let get_encryption_key () = !encryption_key
 
+(* Sets the encryption key *)
 let set_encryption_key key = encryption_key := key
 
+(* Encrypts a plaintext using AES encryption and stored encryption key *)
 let encrypt json_string =
     let compressor = Cryptokit.Zlib.compress ()
     and aes = new Cryptokit.Block.aes_encrypt (get_encryption_key ()) in
@@ -74,6 +80,7 @@ let encrypt json_string =
     transform#finish;
     transform#get_string
 
+(* Decrypts a plaintext using AES encryption and stored encryption key *)
 let decrypt ciphertext =
     let uncompressor = Cryptokit.Zlib.uncompress ()
     and aes = new Cryptokit.Block.aes_decrypt (get_encryption_key ()) in
@@ -85,9 +92,11 @@ let decrypt ciphertext =
     transform#finish;
     transform#get_string
 
+(* Generates an encryption key for the AES block cipher using SHA256 *)
 let generate_encryption_key key =
     let hash = Cryptokit.Hash.sha256 () in
     hash#add_string key;
     encryption_key := hash#result
 
+(* Returns whether the user has set the encryption key *)
 let is_encryption_key_set () = !encryption_key <> ""

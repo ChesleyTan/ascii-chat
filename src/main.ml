@@ -7,6 +7,7 @@ open State
 open Utils
 open Network
 
+(* Helper function for timing the execution of a function *)
 let time f =
     let start = Unix.gettimeofday () in
     let ret = f () in
@@ -48,6 +49,7 @@ let get_terminal_dimensions () =
             )
     with _ -> None
 
+(* Validates that the terminal size is sufficient to display the UI *)
 let check_terminal_dimensions () =
     match get_terminal_dimensions () with
         | Some (rows, cols) when cols < max_cols || rows < max_rows ->
@@ -69,6 +71,7 @@ let set_non_canonical_term () =
                         } in
     Unix.tcsetattr Unix.stdin Unix.TCSANOW term_attr_new
 
+(* Handles non-blocking keyboard input *)
 let handle_key_input () =
     let inchar =
         try
