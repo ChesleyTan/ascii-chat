@@ -99,3 +99,6 @@ let delete_user user =
 
 let get_packages () =
     Hashtbl.fold (fun k v acc -> v::acc) package_mapping []
+
+(* Clears the input buffer - used for testing*)
+let clear_input_buffer () = input_buffer := ""; ()

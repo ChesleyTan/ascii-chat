@@ -38,3 +38,6 @@ let refresh_history_buffer user package =
 
 (*Calling to_string should return a string of the chat history*)
 let chat_history_to_string () = String.concat "\n" !history_buffer
+
+(* Clears the history buffer - used for testing *)
+let clear_history_buffer = history_buffer := []; ()

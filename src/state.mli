@@ -22,3 +22,5 @@ val get_packages: unit -> package list
 val init_state: string -> unit
 
 val delete_user: string -> unit
+
+val clear_input_buffer: unit -> unit
