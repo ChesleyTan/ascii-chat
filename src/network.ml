@@ -16,27 +16,34 @@ let string_of_sockaddr = function
 let connections:((string, (in_channel * out_channel * Unix.file_descr)) Hashtbl.t)
   = Hashtbl.create 4
 
-let broadcast data =
-  let send_data id (_, oc, _) = output_string oc data; flush oc in
-  Hashtbl.iter send_data connections
+let rec broadcast cb data =
+  let send_data id (_, oc, _) lst =
+    try
+      output_string oc data; flush oc; lst
+    with
+    | Sys_error _ -> id::lst
+  in
+  let dropped = Hashtbl.fold send_data connections [] in
+  List.iter (handle_drop cb) dropped
 
-let send package =
+and send package f =
+  let dummy a b = () in
   let msg = package |> serialize |> encrypt in
   print_debug_endline "Broadcasting message";
-  broadcast @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg ^ "\n"
+  broadcast (dummy, f) @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg ^ "\n"
 
-let send_gossip oc =
+and send_gossip oc =
   let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
   let gossip = "G" ^ gossip ^ "\n" in
   print_debug_endline @@ "Sending gossip: " ^ gossip;
   output_string oc gossip; flush oc
 
-let broadcast_gossip () =
+and broadcast_gossip cb =
   let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
   print_debug_endline @@ "Broadcasting gossip: " ^ gossip;
-  broadcast @@ "G" ^ gossip ^ "\n"
+  broadcast cb @@ "G" ^ gossip ^ "\n"
 
-let rec open_connection cb id =
+and open_connection cb id =
   match Str.split (Str.regexp ":") id with
   | [addr; port] ->
       begin
@@ -129,7 +136,7 @@ and accept_connection cb new_client (fd, _) =
   else begin
     print_debug_endline @@ "New connection: " ^ id;
     Hashtbl.add connections id (ic, oc, fd);
-    if new_client then broadcast_gossip ();
+    if new_client then broadcast_gossip cb;
     send_gossip oc;
     Lwt_preemptive.detach (fun () ->
       handle_connection cb id ic ()

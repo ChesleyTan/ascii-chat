@@ -3,8 +3,11 @@ open Package
 (* the address associated with the computer network interface *)
 val my_address : string
 
-(* sends the package to all the connected computers *)
-val send : package -> unit
+(* sends the package to all the connected computers.
+ * [send package f] sends the [package] and uses the callback function [f] if
+ * the send to the computer failed
+ *)
+val send : package -> (string -> unit) -> unit
 
 (* initializes the network.
  * [network_initialize port f host] starts a server and connects to [host] if

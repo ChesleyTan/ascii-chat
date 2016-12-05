@@ -33,6 +33,9 @@ let init_state curr_user =
     current_user := curr_user;
     pack dummy_image "Has connected." 0 0 |> Hashtbl.add package_mapping curr_user
 
+let delete_user user =
+    Hashtbl.remove package_mapping user
+
 (* Updates user package with text message from the input box buffer, and posts
  * contents of text buffer to the history buffer in the messaging module for
  * logging *)
@@ -47,7 +50,7 @@ let log_message () =
         Hashtbl.replace package_mapping !current_user new_package;
         refresh_history_buffer !current_user new_package;
         input_buffer := "";
-        send new_package
+        send new_package delete_user
     else ()
 
 (* Updates user package the new image received *)
@@ -58,7 +61,7 @@ let log_image new_image =
         let new_package =
             pack new_image text (get_timestamp ()) text_timestamp in
         Hashtbl.replace package_mapping !current_user new_package;
-        send new_package
+        send new_package delete_user
     else ()
 
 (* Refreshes package received *)
@@ -93,9 +96,6 @@ let get_num_users () = Hashtbl.length package_mapping
 let get_input_buffer_contents () = !input_buffer
 
 let get_input_buffer_length () = String.length !input_buffer
-
-let delete_user user =
-    Hashtbl.remove package_mapping user
 
 (* Returns a list of all packages in the package mapping *)
 let get_packages () =
