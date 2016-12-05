@@ -4,6 +4,7 @@ open Cv
 open Package
 open View
 open State
+open Utils
 
 let time f =
     let start = Unix.gettimeofday () in
@@ -12,11 +13,13 @@ let time f =
     print_unbuf @@ Printf.sprintf "Execution time: %fs\n" (stop -. start);
     ret
 
+let port = ref 50000
 let text_only = ref false
 let cryptokey = ref ""
 
 let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
             ; ("-t", Arg.Set text_only, "Enable text-only mode")
+            ; ("-p", Arg.Set_int port, "Port to run chat on")
             ]
 
 let help_header = "Available options: "
@@ -94,14 +97,21 @@ let main () =
     if not @@ is_encryption_key_set () then
         begin
             print_endline @@ "You must specify a key for encryption.\n" ^
-                            "Usage: ./ascii-chat <key>";
+                             "Usage: ./ascii-chat <key>";
+            exit 1
+        end
+    else ();
+    if !port < 1024 || !port > 65535 then
+        begin
+            print_endline "Port number must be in range (1024 - 65535)";
             exit 1
         end
     else ();
     set_non_canonical_term ();
     check_terminal_dimensions ();
-    (* TODO get the user's ip and port *)
-    init_state "PLACEHOLDER_IP:PLACEHOLDER_PORT";
+    let curr_user = (get_address_self ()) ^ ":" ^ (string_of_int !port) in
+    print_endline ("Running on " ^ curr_user);
+    init_state curr_user;
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->
         while true; do
