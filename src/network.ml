@@ -66,21 +66,25 @@ and handle_line cb id ic line =
 and handle_connection cb id ic () =
   try
     let line = input_line ic in
-    handle_line cb id ic line
+    handle_line cb id ic line |> handle_connection cb id ic
   with
-  | End_of_file -> () (* TODO: close connection *)
+  | End_of_file ->
+      begin
+        print_endline @@ "Connection dropped: " ^ id;
+        Hashtbl.remove connections id
+      end
 
 and accept_connection cb new_client (fd, remote_addr) =
-  print_endline "new connection";
   let id = string_of_sockaddr remote_addr in
   let ic = Unix.in_channel_of_descr fd in
   let oc = Unix.out_channel_of_descr fd in
+  print_endline @@ "New connection: " ^ id;
   Hashtbl.add connections id oc;
   if new_client then
     broadcast_gossip ()
   ;
   Lwt_preemptive.detach (fun () ->
-      handle_connection cb id ic ()
+    handle_connection cb id ic ()
   ) () |> ignore
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
@@ -92,4 +96,4 @@ let network_initialize port cb =
   bind sock @@ ADDR_INET (my_inet_address, port);
   listen sock 4;
   let rec serve () = accept sock |> (accept_connection cb true) |> serve in
-  serve()
+  serve ()
