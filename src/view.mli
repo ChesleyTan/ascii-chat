@@ -18,7 +18,7 @@ val clear_screen: unit -> unit
 
 val restore_cursor: unit -> unit
 
-val copy_to_grid: (int * int) -> string array array -> unit
+val copy_to_grid: (int * int) -> (int * int) -> string array array -> unit
 
 val print_to_grid: (int * int) -> (int * int) -> string -> unit
 

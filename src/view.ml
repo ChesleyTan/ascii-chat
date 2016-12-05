@@ -144,12 +144,12 @@ let outline window =
                 done;
             done
 
-let copy_to_grid (start_row, start_col) g =
-    let g_rows = (Array.length g) - 1 in
+let copy_to_grid (start_row, start_col) (rows, cols) g =
+    let g_rows = min ((Array.length g) - 1) max_rows in
     if g_rows < 0 then
         ()
     else
-        let g_cols = (Array.length g.(0)) - 1 in
+        let g_cols = min ((Array.length g.(0)) - 1) max_cols in
         if start_row + g_rows >= max_rows || start_col + g_cols >= max_cols then
             failwith "copy_to_grid overflow!"
         else
@@ -239,6 +239,8 @@ let layout_for_num_users n =
         | 4 -> Four
         | _ -> failwith "More than 4 users is unsupported"
 
+let last_layout = ref One
+
 (* Determines which layout to use based on the number of connections, assigns
  * a pane number to each user, and uses the messaging module to render the
  * conversation history *)
@@ -252,7 +254,13 @@ let render text_only =
         let (image, _, _) = unpack package in
         image |>
         Cv.colorize text_only |>
-        copy_to_grid (pane_start_coord idx layout) in
+        copy_to_grid (pane_start_coord idx layout) (image_dimensions layout) in
+    if layout <> !last_layout then
+        begin
+            clear_screen ();
+            last_layout := layout
+        end
+    else ();
     outline layout;
     print_to_grid (pane_start_coord (num_users + 1) layout)
         (text_dimensions layout) chat_history;
