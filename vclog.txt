@@ -1,3 +1,13 @@
+commit 68535a539010ac7c0b21c27c23bd50a76f8b9dc4
+Author: Chesley Tan <chesleytan97@gmail.com>
+Date:   Mon Dec 5 07:29:38 2016 -0500
+
+    Update submission script
+
+ generate-submission.sh |   2 +-
+ vclog.txt              | 933 +++++++++++++++++++++++++------------------------
+ 2 files changed, 478 insertions(+), 457 deletions(-)
+
 commit 446a78e859b0c49880096526687ba661451210c8
 Author: Danny Qiu <dqiu55@gmail.com>
 Date:   Mon Dec 5 07:27:43 2016 -0500
