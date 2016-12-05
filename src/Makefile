@@ -39,4 +39,4 @@ test: bindings $(OBJ) test_main.cmx
 clean:
 	rm -f ascii-chat *.cmi *.cmx *.o
 
-.PHONY: default all clean sharedlib cv utils bindings main test no-bindings
+.PHONY: default all clean sharedlib utils bindings main test no-bindings
