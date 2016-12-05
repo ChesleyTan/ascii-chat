@@ -113,6 +113,7 @@ let main () =
     let curr_user = my_address ^ ":" ^ (string_of_int !port) in
     print_endline ("Running on " ^ curr_user);
     init_state curr_user;
+    network_initialize !port refresh_package;
     clear_screen ();
     let _ = Lwt_preemptive.detach (fun () ->
         while true; do
@@ -134,4 +135,4 @@ let main () =
     return ()
 
 let _ =
-    Lwt_main.run (main ())
+    Lwt_main.run @@ main ()
