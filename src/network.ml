@@ -28,8 +28,10 @@ let accept_connection conn =
     let open Unix in
     let fd, _ = conn in
     print_endline "new connection";
-    Lwt.on_failure (handle_connection fd ())
-        (fun e -> Lwt_log.ign_error (Printexc.to_string e))
+    Lwt_preemptive.detach (fun () ->
+        handle_connection fd ()
+    ) ();
+    ()
 
 let create_socket port =
     let open Unix in
