@@ -23,12 +23,13 @@ let add_to_history_buffer user package  =
 let refresh_history_buffer user package =
     let (_, _, timestamp) = unpack package in
         if Hashtbl.mem message_mapping user
-        && Hashtbl.find message_mapping user < timestamp
         then
-            begin
-                Hashtbl.replace message_mapping user timestamp;
-                add_to_history_buffer user package
-            end
+            if Hashtbl.find message_mapping user < timestamp then
+                begin
+                    Hashtbl.replace message_mapping user timestamp;
+                    add_to_history_buffer user package
+                end
+            else ()
         else
             begin
                 Hashtbl.add message_mapping user timestamp;

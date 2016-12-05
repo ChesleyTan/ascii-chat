@@ -35,6 +35,7 @@ main: bindings $(OBJ) main.cmx
 
 test: bindings $(OBJ) test_main.cmx
 	ocamlfind ocamlopt $(OPTS) -linkpkg -package $(OCAMLPKGS) cv.cmx utils.cmx $(OBJ) test_main.cmx -cclib -lasciichat_cv -cclib -lasciichat_utils -o test_main
+	./test_main -runner sequential
 
 clean:
 	rm -f ascii-chat *.cmi *.cmx *.o
