@@ -21,7 +21,7 @@ let rec handle_connection fd =
     let buf = Bytes.create 1 in
     let rec inner () =
     Unix.read fd buf 0 1 |>
-    (fun n -> print_endline buf |> inner)
+    (fun n -> if n <> 0 then print_endline buf |> inner else return ())
     in inner
 
 let accept_connection conn =
