@@ -13,10 +13,11 @@ let string_of_sockaddr = function
   | Unix.ADDR_INET (addr, port) -> (Unix.string_of_inet_addr addr)
                                    ^ ":" ^ (string_of_int port)
 
-let connections = Hashtbl.create 4
+let connections:((string, (in_channel * out_channel * Unix.file_descr)) Hashtbl.t)
+  = Hashtbl.create 4
 
 let broadcast data =
-  let send_data id oc = output_string oc data; flush oc in
+  let send_data id (_, oc, _) = output_string oc data; flush oc in
   Hashtbl.iter send_data connections
 
 let send package =
@@ -47,7 +48,7 @@ let rec open_connection cb id =
         let open Unix in
         let sock = socket PF_INET SOCK_STREAM 0 in
         setsockopt sock SO_REUSEADDR true;
-        let remote_addr = ADDR_INET (Unix.inet_addr_of_string addr,
+        let remote_addr = ADDR_INET (inet_addr_of_string addr,
                                      int_of_string port) in
         connect sock remote_addr;
         accept_connection cb false (sock, remote_addr)
@@ -78,8 +79,12 @@ and handle_msg cb id ic msg_len =
   | None -> print_debug_endline @@ "Message length not an integer: " ^ msg_len
 
 and handle_drop id =
-  Hashtbl.remove connections id
-    (* TODO: handle closing connections *)
+  try
+    let (ic, oc, fd) = Hashtbl.find connections id in
+    shutdown_connection ic oc fd;
+    Hashtbl.remove connections id
+  with
+  | Not_found -> ()
 
 and handle_line cb id ic line =
   let line = String.trim line in
@@ -100,7 +105,7 @@ and handle_connection cb id ic () =
   | End_of_file ->
       begin
         print_debug_endline @@ "Connection dropped: " ^ id;
-        Hashtbl.remove connections id
+        handle_drop id
       end
 
 and handle_identity oc line =
@@ -112,11 +117,13 @@ and handle_identity oc line =
     | c -> ""
   else ""
 
-and shutdown_connection fd ic oc =
-  let open Unix in
-  shutdown fd SHUTDOWN_ALL;
-  close_in_noerr ic;
-  close_out_noerr oc;
+and shutdown_connection ic oc fd =
+  try
+    Unix.shutdown fd Unix.SHUTDOWN_ALL;
+    close_in_noerr ic;
+    close_out_noerr oc
+  with
+  | Unix.Unix_error _ -> ()
 
 and accept_connection cb new_client (fd, _) =
   let ic = Unix.in_channel_of_descr fd in
@@ -124,10 +131,10 @@ and accept_connection cb new_client (fd, _) =
   output_string oc ("I" ^ !my_id ^ "\n"); flush oc;
   let id = input_line ic |> handle_identity oc in
   if id = "" || Hashtbl.mem connections id
-  then shutdown_connection fd ic oc
+  then shutdown_connection ic oc fd
   else begin
     print_debug_endline @@ "New connection: " ^ id;
-    Hashtbl.add connections id oc;
+    Hashtbl.add connections id (ic, oc, fd);
     if new_client then broadcast_gossip ();
     send_gossip oc;
     Lwt_preemptive.detach (fun () ->
@@ -137,15 +144,16 @@ and accept_connection cb new_client (fd, _) =
 
 (* Adapted from: http://baturin.org/code/lwt-counter-server/ *)
 let network_initialize port cb host_addr =
-  let dev_null = open_out "/dev/null" in
   my_id := (my_address ^ ":" ^ (string_of_int port));
-  Hashtbl.add connections !my_id dev_null;
-  if host_addr <> "" then open_connection cb host_addr;
   Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
-  let open Unix in
-  let sock = socket PF_INET SOCK_STREAM 0 in
-  setsockopt sock SO_REUSEADDR true;
-  bind sock @@ ADDR_INET (my_inet_address, port);
-  listen sock 4;
-  let rec serve () = accept sock |> (accept_connection cb true) |> serve in
+  let dev_null = Unix.openfile "/dev/null" [Unix.O_RDWR;Unix.O_NONBLOCK] 0 in
+  let ic = Unix.in_channel_of_descr dev_null in
+  let oc = Unix.out_channel_of_descr dev_null in
+  Hashtbl.add connections !my_id (ic, oc, dev_null);
+  if host_addr <> "" then open_connection cb host_addr else ();
+  let sock = Unix.(socket PF_INET SOCK_STREAM 0) in
+  Unix.(setsockopt sock SO_REUSEADDR true);
+  Unix.(bind sock @@ ADDR_INET (my_inet_address, port));
+  Unix.listen sock 4;
+  let rec serve () = Unix.accept sock |> (accept_connection cb true) |> serve in
   serve ()
