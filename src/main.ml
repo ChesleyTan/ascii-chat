@@ -19,10 +19,12 @@ let text_only = ref false
 let cryptokey = ref ""
 let host_addr = ref ""
 
-let specs = [ ("--text-only", Arg.Set text_only, "Enable text-only mode")
-            ; ("-t", Arg.Set text_only, "Enable text-only mode")
-            ; ("-p", Arg.Set_int port, "Port to run chat on")
-            ; ("-host", Arg.Set_string host_addr, "Host user to connect to")
+let specs = [ ("--text-only", Arg.Set text_only, "\tEnable text-only mode")
+            ; ("-t", Arg.Set text_only, "\t\tEnable text-only mode")
+            ; ("-p", Arg.Set_int port, "\t\tPort to run chat on")
+            ; ("-host", Arg.Set_string host_addr,
+                "\tHost user to connect to." ^
+                " If none is specified, the user becomes a host.")
             ]
 
 let help_header = "Available options: "
@@ -30,7 +32,6 @@ let help_header = "Available options: "
 let img_width = ref 0
 let img_height = ref 0
 
-(* TODO add API functions for networking module to call *)
 (* TODO add MACS and DH key exchange *)
 
 (* Adapted from: http://pleac.sourceforge.net/pleac_ocaml/userinterfaces.html
