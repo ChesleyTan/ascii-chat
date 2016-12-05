@@ -2,20 +2,19 @@ open Package
 open Utils
 open Lwt
 
+(* set to true to get network debugging information *)
 let print_debug_endline = if false then print_endline else ignore
 
 let my_address = Utils.get_address_self()
 let my_inet_address = Unix.inet_addr_of_string my_address
 let my_id = ref ""
 
-let string_of_sockaddr = function
-  | Unix.ADDR_UNIX s -> s
-  | Unix.ADDR_INET (addr, port) -> (Unix.string_of_inet_addr addr)
-                                   ^ ":" ^ (string_of_int port)
-
-let connections:((string, (in_channel * out_channel * Unix.file_descr)) Hashtbl.t)
+let connections:((string,
+                  (in_channel * out_channel * Unix.file_descr))
+                   Hashtbl.t)
   = Hashtbl.create 4
 
+(* Sends [data] to all connected users except the one specified by [no_send] *)
 let rec broadcast cb no_send data =
   let send_data id (_, oc, _) lst =
     if id = no_send
@@ -34,13 +33,16 @@ and send package f =
   let dummy a b = () in
   let msg = package |> serialize |> encrypt in
   print_debug_endline "Broadcasting message";
-  broadcast (dummy, f) "" @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg ^ "\n"
+  broadcast (dummy, f) "" @@ "M" ^ (msg |> String.length |> string_of_int)
+                             ^ "\n" ^ msg ^ "\n"
 
+(* Sends a gossip of the connection state to all connected users *)
 and broadcast_gossip cb id =
   let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
   print_debug_endline @@ "Broadcasting gossip: " ^ gossip;
   broadcast cb id @@ "G" ^ gossip ^ "\n"
 
+(* Opens a connection to the given id *)
 and open_connection cb id =
   match Str.split (Str.regexp ":") id with
   | [addr; port] ->
@@ -56,15 +58,18 @@ and open_connection cb id =
       end
   | _ -> ()
 
+(* Updates the connection state based on a single connected address *)
 and update_connection cb c =
   if Hashtbl.mem connections c then ()
   else open_connection cb c
 
+(* Handles a received gossip *)
 and handle_gossip cb gossip =
   print_debug_endline @@ "Received gossip: " ^ gossip;
   let conns = Str.split (Str.regexp ";") gossip in
     List.iter (update_connection cb) conns
 
+(* Handles a received message *)
 and handle_msg cb id ic msg_len =
   match safe_int_of_string msg_len with
   | Some len ->
@@ -77,6 +82,9 @@ and handle_msg cb id ic msg_len =
       end
   | None -> print_debug_endline @@ "Message length not an integer: " ^ msg_len
 
+(* Handles a dropped user by closing the connection and removing the user from
+ * the connection state
+ *)
 and handle_drop cb id =
   try
     let (ic, oc, fd) = Hashtbl.find connections id in
@@ -86,6 +94,10 @@ and handle_drop cb id =
   with
   | Not_found -> ()
 
+(* Handles a line of a network command. Supported commands:
+ * G;id1;id2;id3;...\n
+ * M<size>\n<data>\n
+ *)
 and handle_line cb id ic line =
   let line = String.trim line in
   if String.length line > 0 then
@@ -93,9 +105,11 @@ and handle_line cb id ic line =
     match String.get line 0 with
     | 'G' -> handle_gossip cb data
     | 'M' -> handle_msg cb id ic data
-    | c -> print_debug_endline @@ "Received unknown header: " ^ (String.make 1 c)
+    | c -> print_debug_endline @@ "Received unknown header: "
+                                  ^ (String.make 1 c)
   else print_debug_endline @@ "Received invalid line: " ^ line
 
+(* Blocks and handles the input from a connected user *)
 and handle_connection cb id ic () =
   try
     let line = input_line ic in
@@ -107,6 +121,7 @@ and handle_connection cb id ic () =
         handle_drop cb id
       end
 
+(* Blocks and returns the id of the connecting user *)
 and handle_identity oc line =
   let line = String.trim line in
   if String.length line > 0 then
@@ -116,6 +131,7 @@ and handle_identity oc line =
     | _ -> ""
   else ""
 
+(* Shuts down a connection given the in/out channels and file descriptor *)
 and shutdown_connection ic oc fd =
   try
     Unix.shutdown fd Unix.SHUTDOWN_ALL;
@@ -124,6 +140,7 @@ and shutdown_connection ic oc fd =
   with
   | Unix.Unix_error _ -> ()
 
+(* Accepts the connection using the created socket from Unix.accept *)
 and accept_connection cb new_client (fd, _) =
   let ic = Unix.in_channel_of_descr fd in
   let oc = Unix.out_channel_of_descr fd in
@@ -153,5 +170,8 @@ let network_initialize port cb host_addr =
   Unix.listen sock 4;
   Hashtbl.add connections !my_id (ic, oc, dev_null);
   if host_addr <> "" then open_connection cb host_addr else ();
-  let rec serve () = Unix.accept sock |> (accept_connection cb true) |> serve in
-  serve ()
+  let rec server_loop () = Unix.accept sock
+                           |> (accept_connection cb true)
+                           |> server_loop
+  in
+  server_loop ()
