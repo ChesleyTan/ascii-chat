@@ -129,7 +129,7 @@ and accept_connection cb new_client (fd, _) =
   let oc = Unix.out_channel_of_descr fd in
   output_string oc ("I" ^ !my_id ^ "\n"); flush oc;
   let id = input_line ic |> handle_identity oc in
-  if id = "" || Hashtbl.mem connections id
+  if id = "" || Hashtbl.mem connections id || Hashtbl.length connections == 4
   then shutdown_connection ic oc fd
   else begin
     print_debug_endline @@ "New connection: " ^ id;
