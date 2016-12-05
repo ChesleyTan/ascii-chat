@@ -16,12 +16,16 @@ let string_of_sockaddr = function
 let connections:((string, (in_channel * out_channel * Unix.file_descr)) Hashtbl.t)
   = Hashtbl.create 4
 
-let rec broadcast cb data =
+let rec broadcast cb no_send data =
   let send_data id (_, oc, _) lst =
-    try
-      output_string oc data; flush oc; lst
-    with
-    | Sys_error _ -> id::lst
+    if id = no_send
+    then lst
+    else begin
+        try
+          output_string oc data; flush oc; lst
+        with
+        | Sys_error _ -> id::lst
+    end
   in
   let dropped = Hashtbl.fold send_data connections [] in
   List.iter (handle_drop cb) dropped
@@ -30,18 +34,12 @@ and send package f =
   let dummy a b = () in
   let msg = package |> serialize |> encrypt in
   print_debug_endline "Broadcasting message";
-  broadcast (dummy, f) @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg ^ "\n"
+  broadcast (dummy, f) "" @@ "M" ^ (msg |> String.length |> string_of_int) ^ "\n" ^ msg ^ "\n"
 
-and send_gossip oc =
-  let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
-  let gossip = "G" ^ gossip ^ "\n" in
-  print_debug_endline @@ "Sending gossip: " ^ gossip;
-  output_string oc gossip; flush oc
-
-and broadcast_gossip cb =
+and broadcast_gossip cb id =
   let gossip = Hashtbl.fold (fun k _ s -> s ^ ";" ^ k) connections "" in
   print_debug_endline @@ "Broadcasting gossip: " ^ gossip;
-  broadcast cb @@ "G" ^ gossip ^ "\n"
+  broadcast cb id @@ "G" ^ gossip ^ "\n"
 
 and open_connection cb id =
   match Str.split (Str.regexp ":") id with
@@ -60,7 +58,7 @@ and open_connection cb id =
 
 and update_connection cb c =
   if Hashtbl.mem connections c then ()
-  else open_connection cb c |> ignore
+  else open_connection cb c
 
 and handle_gossip cb gossip =
   print_debug_endline @@ "Received gossip: " ^ gossip;
@@ -136,8 +134,7 @@ and accept_connection cb new_client (fd, _) =
   else begin
     print_debug_endline @@ "New connection: " ^ id;
     Hashtbl.add connections id (ic, oc, fd);
-    if new_client then broadcast_gossip cb;
-    send_gossip oc;
+    if new_client then broadcast_gossip cb id;
     Lwt_preemptive.detach (fun () ->
       handle_connection cb id ic ()
     ) () |> ignore_result;
@@ -150,11 +147,11 @@ let network_initialize port cb host_addr =
   let dev_null = Unix.openfile "/dev/null" [Unix.O_RDWR;Unix.O_NONBLOCK] 0 in
   let ic = Unix.in_channel_of_descr dev_null in
   let oc = Unix.out_channel_of_descr dev_null in
-  Hashtbl.add connections !my_id (ic, oc, dev_null);
-  if host_addr <> "" then open_connection cb host_addr else ();
   let sock = Unix.(socket PF_INET SOCK_STREAM 0) in
   Unix.(setsockopt sock SO_REUSEADDR true);
   Unix.(bind sock @@ ADDR_INET (my_inet_address, port));
   Unix.listen sock 4;
+  Hashtbl.add connections !my_id (ic, oc, dev_null);
+  if host_addr <> "" then open_connection cb host_addr else ();
   let rec serve () = Unix.accept sock |> (accept_connection cb true) |> serve in
   serve ()
