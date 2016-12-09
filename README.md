@@ -34,3 +34,4 @@ where `encryption_key` is a pre-shared key between all participants, and `host_i
 ##Images
 
 ![ascii-chat1](/images/ascii-chat1.gif)
+![ascii-chat2](/images/ascii-chat2.gif)
