@@ -38,7 +38,7 @@ To run ascii-chat as the host user for the chat, enter the command:
 
 where `encryption_key` is a pre-shared key between all participants, and `host_ip:host_port` is the network address of the host user.
 
-##Images
+## Images
 
 ![ascii-chat1](/images/ascii-chat1.gif)
 ![ascii-chat2](/images/ascii-chat2.gif)
